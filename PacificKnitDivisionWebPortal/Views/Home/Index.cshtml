@@ -1,8 +1,25 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<style>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Pacific Knit Division Web Portal</p>
+    .border-shadow {
+        border: 1px solid;
+        padding: 0px;
+        box-shadow: 5px 4px;
+    }
+</style>
+<div>
+    <span class="badge rounded-pill bg-dark mb-2">Notice</span>
+    <table class="table table-borderless table-sm">
+        <tbody class="border-shadow">
+            <tr>
+                <th scope="row" class="p-3">1</th>
+                <td class="text-start p-3 fw-bold">Festival Holidays 2025</td>
+                <td class="text-end"><a target="_blank" href="~/files/festival_2025.pdf"><img style="height: 45px;" src="~/assets/logo/pdf.png"></img></a></td>
+            </tr>
+        </tbody>
+    </table>
+    <span class="badge rounded-pill bg-dark mb-2">Files</span>
+    <p>No Files Available</p>
 </div>
