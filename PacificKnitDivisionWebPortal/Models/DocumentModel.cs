@@ -12,6 +12,7 @@ namespace PacificKnitDivisionWebPortal.Models
         [Display(Name="SL No.")]
         public int DisplayOrder { get; set; }
         public string FileType { get; set; }
+        [Display(Name = "Inactive")]
         public bool IsDelete { get; set; }
 
         [ValidateNever]

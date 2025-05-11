@@ -32,8 +32,8 @@
 
                         @if (User.IsInRole(SD.Role_Admin))
                         {
-                            <a class="navbar-brand" asp-area="Admin" asp-controller="Document" asp-action="Index">Document</a>
-                            <a class="navbar-brand" asp-area="User" asp-controller="Home" asp-action="List">List</a>
+                            <a class="text-dark" asp-area="Admin" asp-controller="Document" asp-action="Index">Manage Documents</a>
+                          @*   <a class="navbar-brand" asp-area="User" asp-controller="Home" asp-action="List">List</a> *@
                         }
                     </ul>
                     <partial name="_LoginPartial"></partial>

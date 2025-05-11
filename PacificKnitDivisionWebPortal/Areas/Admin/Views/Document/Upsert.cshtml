@@ -3,69 +3,70 @@
 @{
     ViewData["Title"] = "Create";
 }
+<div class="main-div">
+    <h1>Create</h1>
+    <h4>Document</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Upsert" enctype="multipart/form-data">
+                <input asp-for="Id" hidden />
+                <input asp-for="FileUrl" hidden />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="FileType" class="control-label"></label>
+                    <select asp-for="FileType" id="FileType">
+                        <option disabled selected>--Select Type--</option>
+                        <option value="Notice">Notice</option>
+                        <option value="Info">Info</option>
+                        <option value="Files">Files</option>
+                    </select>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DisplayOrder" class="control-label"></label>
+                    <input asp-for="DisplayOrder" class="form-control" />
+                    <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsDelete" /> @Html.DisplayNameFor(model => model.IsDelete)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FileUrl" class="control-label"></label>
+                    <input type="file" name="file" asp-for="FileUrl" class="form-control" />
+                    <span asp-validation-for="FileUrl" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-2">
 
-<h1>Create</h1>
+                    @if (Model.Id != 0)
+                    {
+                        <button type="submit" value="Create" class="btn btn-primary">Update</button>
+                    }
+                    else
+                    {
 
-<h4>Document</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Upsert" enctype="multipart/form-data">
-            <input asp-for="Id" hidden />
-            <input asp-for="FileUrl" hidden />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FileType" class="control-label"></label>
-                <select asp-for="FileType" id="FileType">
-                    <option disabled selected>--Select Type--</option>
-                    <option value="Notice">Notice</option>
-                    <option value="Info">Info</option>
-                    <option value="Files">Files</option>
-                </select>
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DisplayOrder" class="control-label"></label>
-                <input asp-for="DisplayOrder" class="form-control" />
-                <span asp-validation-for="DisplayOrder" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsDelete" /> @Html.DisplayNameFor(model => model.IsDelete)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="FileUrl" class="control-label"></label>
-                <input type="file" name="file" asp-for="FileUrl" class="form-control" />
-                <span asp-validation-for="FileUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+                        <button type="submit" value="Create" class="btn btn-primary">Create</button>
+                    }
+                </div>
+            </form>
+        </div>
 
-                @if (Model.Id != 0)
-                {
-                    <button type="submit" value="Create" class="btn btn-primary">Update</button>
-                }
-                else
-                {
-
-                    <button type="submit" value="Create" class="btn btn-primary">Create</button>
-                }
-            </div>
-        </form>
+        <div class="col-md-8">
+            <iframe src="@Model.FileUrl" style="width:100%;height:100%"></iframe>
+        </div>
     </div>
 
-    <div class="col-md-8">
-        <iframe src="@Model.FileUrl" style="width:100%;height:100%"></iframe>
+    <div>
+        <a asp-action="Index">Back to List</a>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

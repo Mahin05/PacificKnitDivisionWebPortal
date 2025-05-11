@@ -21,3 +21,9 @@ body {
     margin-bottom: 60px;
     background-image: url("/Assets/Background/Silk.jpg");
 }
+.main-div {
+    border: 1px solid #dcc2c282;
+    padding: 10px;
+    border-radius: 5px;
+    background: snow;
+}
