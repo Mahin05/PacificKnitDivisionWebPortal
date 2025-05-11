@@ -1,0 +1,139 @@
+﻿@{
+    ViewData["Title"] = "";
+}
+<style>
+
+    .border-shadow {
+        border: 1px solid;
+        padding: 0px;
+        box-shadow: 5px 4px 5px 0px
+    }
+
+    .main-div {
+        border: 1px solid #dcc2c282;
+        padding: 10px;
+        border-radius: 5px;
+        background: snow;
+    }
+</style>
+<div class="main-div">
+    @* -------------NOTICE PART----------------------- *@
+    <span class="badge rounded-pill bg-dark mb-2">Notice</span>
+    <div id="notice-div">
+
+    </div>
+
+    <span class="badge rounded-pill bg-dark mb-2">Info</span>
+    <div id="info-div">
+    </div>
+    @* -------------FILES PART----------------------- *@
+    @* added code in 13-apr-2025 *@
+    <span class="badge rounded-pill bg-dark mb-2">Files</span>
+    <div id="files-div">
+    </div>
+</div>
+
+
+
+
+@section Scripts{
+    <script type="text/javascript">
+                $.ajax({
+            url: '/User/Home/GetAllDocumentList',
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                //console.log("responsedata", response);
+                if (response.data) {
+                    console.log(response.data);
+                           var dataList = response.data;
+
+                    dataList.forEach(function(data) {
+                        if (data.fileType === "Notice") {
+                            var noticeParentDiv = document.getElementById("notice-div");
+
+                            var noticeDiv = document.createElement("div");
+                            noticeDiv.innerHTML = `
+                                <table class="table table-borderless table-sm mb-2">
+                                    <tbody class="border-shadow">
+                                        <tr>
+                                            <th class="p-3" style="width: 5%;">${data.displayOrder}</th>
+                                            <td class="text-start p-3 fw-bold">${data.name}</td>
+                                            <td class="text-end">
+                                                <a href="${data.fileUrl}" download class="btn text-white mt-2" style="background-color:#061640;font-size: 12px;">
+                                                    <i class="bi bi-cloud-arrow-down"></i> Download
+                                                </a>
+                                                <a target="_blank" href="${data.fileUrl}" class="btn text-white mt-2" style="background-color:#061640;font-size: 12px;">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            `;
+                            noticeParentDiv.appendChild(noticeDiv);
+                        }
+
+                        if (data.fileType === "Info") {
+                            var infoParentDiv = document.getElementById("info-div");
+
+                            var infoDiv = document.createElement("div");
+                            infoDiv.innerHTML = `
+                                <table class="table table-borderless table-sm mb-2">
+                                    <tbody class="border-shadow">
+                                        <tr>
+                                            <th class="p-3" style="width: 5%;">${data.displayOrder}</th>
+                                            <td class="text-start p-3 fw-bold">${data.name}</td>
+                                            <td class="text-end">
+                                                <a href="${data.fileUrl}" download class="btn text-white mt-2" style="background-color:#061640;font-size: 12px;">
+                                                    <i class="bi bi-cloud-arrow-down"></i> Download
+                                                </a>
+                                                <a target="_blank" href="${data.fileUrl}" class="btn text-white mt-2" style="background-color:#061640;font-size: 12px;">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            `;
+                            infoParentDiv.appendChild(infoDiv);
+                        }
+
+                        if (data.fileType === "Files") {
+                            var filesParentDiv = document.getElementById("files-div");
+
+                            var filesDiv = document.createElement("div");
+                            infoDiv.innerHTML = `
+                                <table class="table table-borderless table-sm mb-2">
+                                    <tbody class="border-shadow">
+                                        <tr>
+                                            <th class="p-3" style="width: 5%;">${data.displayOrder}</th>
+                                            <td class="text-start p-3 fw-bold">${data.name}</td>
+                                            <td class="text-end">
+                                                <a href="${data.fileUrl}" download class="btn text-white mt-2" style="background-color:#061640;font-size: 12px;">
+                                                    <i class="bi bi-cloud-arrow-down"></i> Download
+                                                </a>
+                                                <a target="_blank" href="${data.fileUrl}" class="btn text-white mt-2" style="background-color:#061640;font-size: 12px;">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            `;
+                            filesParentDiv.appendChild(filesDiv);
+                        }
+                    });
+
+                }
+                else {
+                    console.log("No data found.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("An error occurred: " + error);
+            }
+        });
+
+    </script>
+}

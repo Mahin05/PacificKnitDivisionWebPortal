@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OnlineBookOrderManagementSystem.Repositories.IRepository;
 using PacificKnitDivisionWebPortal.Models;
 
 namespace PacificKnitDivisionWebPortal.Controllers;
@@ -9,11 +11,23 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
-    public HomeController(ILogger<HomeController> logger)
+    private readonly IUnitOfWork unitOfWork;
+
+    public HomeController(ILogger<HomeController> logger, IUnitOfWork _unitOfWork)
     {
         _logger = logger;
+        unitOfWork = _unitOfWork;
     }
 
+    public IActionResult List()
+    {
+        return View();
+    }
+    public IActionResult GetAllDocumentList()
+    {
+        var documents = unitOfWork.Document.GetAll().OrderBy(x=>x.DisplayOrder).Where(x=>x.IsDelete==false).ToList();
+        return Json(new { data = documents });
+    }
     public IActionResult Index()
     {
         return View();

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using OnlineBookOrderManagementSystem.Data
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -15,7 +16,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand bg-transparent" href="#">
+                <a class="navbar-brand bg-transparent" asp-area="User" asp-controller="Home" asp-action="Index">
                     <img style="height:45px; width:auto;" src="~/Assets/logo/Pacific Knit Division.png" />
                 </a>
                 <a class="navbar-brand" href="#">Web Portal</a>
@@ -28,12 +29,19 @@
                       @*   <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li> *@
+
+                        @if (User.IsInRole(SD.Role_Admin))
+                        {
+                            <a class="navbar-brand" asp-area="Admin" asp-controller="Document" asp-action="Index">Document</a>
+                            <a class="navbar-brand" asp-area="User" asp-controller="Home" asp-action="List">List</a>
+                        }
                     </ul>
+                    <partial name="_LoginPartial"></partial>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container" >
+    <div class="container" @* style="background-color: white;" *@>
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
