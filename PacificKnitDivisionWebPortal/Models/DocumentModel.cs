@@ -16,6 +16,7 @@ namespace PacificKnitDivisionWebPortal.Models
         public bool IsDelete { get; set; }
 
         [ValidateNever]
+        [Display(Name = "File")]
         public string FileUrl { get; set; }
     }
 }
