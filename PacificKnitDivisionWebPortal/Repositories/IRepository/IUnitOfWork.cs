@@ -4,6 +4,7 @@
     {
         //IApplicationUserReposiory applicationUser { get; }
         IDocumentRepository Document { get; }
+        IDepartmentRepository department { get; }
         void Save();
     }
 }

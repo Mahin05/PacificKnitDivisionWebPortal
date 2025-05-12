@@ -8,11 +8,13 @@ namespace OnlineBookOrderManagementSystem.Repositories.Repository
         private readonly ApplicationDBContext _db;
         //public IApplicationUserReposiory applicationUser { get; private set; }
         public IDocumentRepository Document { get; private set; }
+        public IDepartmentRepository department { get; private set; }
         public UnitOfWork(ApplicationDBContext db)
         {
             _db = db;
             //applicationUser = new ApplicationUserReposiory(_db);
             Document= new DocumentRepository(_db);
+            department= new DepartmentRepository(_db);
         }
 
         //public async Task Save()
