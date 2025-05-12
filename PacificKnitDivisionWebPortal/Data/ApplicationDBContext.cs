@@ -10,5 +10,6 @@ namespace PacificKnitDivisionWebPortal.Data
         {
         }
         public DbSet<DocumentModel> documents { get; set; }
+        public DbSet<Department> departments { get; set; }
     }
 }
