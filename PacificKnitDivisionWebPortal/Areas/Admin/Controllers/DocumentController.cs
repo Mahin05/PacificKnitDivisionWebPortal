@@ -28,7 +28,7 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         // GET: Admin/Document
         public async Task<IActionResult> Index()
         {
-            var DocumentList = unitOfWork.Document.GetAll().OrderBy(x=>x.DisplayOrder).ToArrayAsync();
+            var DocumentList = unitOfWork.Document.GetAll().OrderBy(x=>x.FileType).ThenBy(x=>x.DisplayOrder).ToArrayAsync();
             return View(await DocumentList);
         }
 

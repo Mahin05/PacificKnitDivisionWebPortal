@@ -15,10 +15,10 @@
 </style>
 <div class="main-div">
 
-    <h1>Index</h1>
+    <h1 class="text-center">Document List</h1>
 
     <p>
-        <a asp-action="Upsert">Create New</a>
+        <a class="btn btn-primary" asp-action="Upsert">Create New</a>
     </p>
     <table class="table">
         <thead>
@@ -61,9 +61,9 @@
                         @Html.DisplayFor(modelItem => item.FileUrl)
                     </td> *@
                     <td>
-                        <a asp-action="Upsert" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a class="btn btn-success" asp-action="Upsert" asp-route-id="@item.Id">Edit</a> |
+                        @* <a asp-action="Details" asp-route-id="@item.Id">Details</a> | *@
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                     </td>
                 </tr>
             }
