@@ -11,6 +11,10 @@
 	<link rel="stylesheet" href="~/PacificKnitDivisionWebPortal.styles.css" asp-append-version="true" />
 	<link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
 	<link href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+	<link href="~/lib/toastr.js/toastr.css" rel="stylesheet" />
+	<link href="~/lib/toastr.js/toastr.min.css" rel="stylesheet" />
+	<link href="~/lib/sweetalert2/sweetalert2.css" rel="stylesheet" />
+	<link href="~/lib/sweetalert2/sweetalert2.min.css" rel="stylesheet" />
 </head>
 <body style="background-repeat:no-repeat; background-size:cover">
     <header>
@@ -48,6 +52,7 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            <partial name="_Notification" />
             @RenderBody()
         </main>
     </div>
@@ -56,7 +61,9 @@
         <div class="container text-center">
             &copy; Developed By : ICT Department @* <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@
         </div>
-    </footer>
+	</footer>
+	<script src="~/lib/toastr.js/toastr.min.js"></script>
+	<script src="~/lib/sweetalert2/sweetalert2.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

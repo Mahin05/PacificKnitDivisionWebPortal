@@ -252,10 +252,11 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var department = await db.departments.FindAsync(id);
+            var department = await unitOfWork.department.Get(x=>x.Id==id);
             if (department != null)
             {
-                db.departments.Remove(department);
+                TempData["success"] = "Department Removed Successfully!";
+                await unitOfWork.department.Remove(department);
             }
 
             await db.SaveChangesAsync();
