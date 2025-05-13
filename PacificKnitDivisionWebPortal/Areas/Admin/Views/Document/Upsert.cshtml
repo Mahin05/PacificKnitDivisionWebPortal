@@ -37,7 +37,7 @@
                 </div>
                 <div class="form-group mb-2 fw-bold">
                     <label asp-for="DisplayOrder" class="control-label"></label>
-                    <input asp-for="DisplayOrder" class="form-control" />
+                    <input asp-for="DisplayOrder" class="form-control" id="display-order" />
                     <span asp-validation-for="DisplayOrder" class="text-danger"></span>
                 </div>
                 <div class="form-group form-check mb-2 fw-bold">
@@ -78,4 +78,40 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+
+    <script type="text/javascript">
+                var FileType = $("#FileType").on("change",function(){
+                    var value = $(this).val();
+                    // alert(value);
+
+
+                    $.ajax({
+                    url: '/Admin/Document/GetDisplayOrder',
+                    method: 'GET',
+                        dataType: 'json',
+                        data: { fileType: value },
+                        success: function (response) {
+                            if (response.data) {
+                                console.log(response.data);
+                               $("#display-order").val(response.data+1);
+
+
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+            },
+            error: function (xhr, status, error) {
+                console.error("An error occurred: " + error);
+            }
+        });
+
+                });
+
+
+                
+
+    </script>
 }

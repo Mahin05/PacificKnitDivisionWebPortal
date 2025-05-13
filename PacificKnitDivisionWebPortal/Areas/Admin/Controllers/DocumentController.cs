@@ -56,6 +56,11 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
             return View();
         }
 
+        public IActionResult GetDisplayOrder(string fileType)
+        {
+            var displayOrder = unitOfWork.Document.GetAll().Where(x=>x.FileType==fileType).Select(x=>x.DisplayOrder).Max();
+            return Json(new {data =  displayOrder});
+        }
 
         public async Task<IActionResult> Upsert(int? Id)
         {
