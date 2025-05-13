@@ -7,8 +7,12 @@
       "destination": "wwwroot/lib/bootstrap-icons/"
     },
     {
-      "library": "sweetalert@2.1.2",
-      "destination": "wwwroot/lib/sweetalert/"
+      "library": "toastr.js@2.1.4",
+      "destination": "wwwroot/lib/toastr.js/"
+    },
+    {
+      "library": "sweetalert2@11.16.1",
+      "destination": "wwwroot/lib/sweetalert2/"
     }
   ]
 }

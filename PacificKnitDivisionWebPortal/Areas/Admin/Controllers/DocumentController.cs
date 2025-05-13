@@ -157,12 +157,12 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
 
                     if (document.Id == null)
                     {
-                        TempData["success"] = "Product Created Successfully!";
+                        TempData["success"] = "Document Created Successfully!";
                         unitOfWork.Document.Add(document);
                     }
                     else
                     {
-                        TempData["success"] = "Product Updated Successfully!";
+                        TempData["success"] = "Document Updated Successfully!";
                         unitOfWork.Document.Update(document);
                     }
                     unitOfWork.Save();
@@ -229,36 +229,39 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         }
 
         // GET: Admin/Document/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var document = await unitOfWork.Document
-                .Get(m => m.Id == id);
-            if (document == null)
-            {
-                return NotFound();
-            }
+        //    var document = await unitOfWork.Document
+        //        .Get(m => m.Id == id);
+        //    if (document == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(document);
-        }
+        //    return View(document);
+        //}
 
         // POST: Admin/Document/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var document = await unitOfWork.Document.Get(x=>x.Id==id);
             if (document != null)
             {
+                //TempData["success"] = "Document Removed Successfully!";
                 await unitOfWork.Document.Remove(document);
             }
 
             unitOfWork.Save();
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = "Document Removed Successfully!" });
+            //return RedirectToAction(nameof(Index));
         }
 
         private bool DocumentModelExists(int id)
