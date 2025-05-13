@@ -102,57 +102,6 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
 
 
 
-        [HttpPost]
-        public async Task<IActionResult> Import(IFormFile file)
-        {
-            if (file != null && file.Length > 0)
-            {
-                using (var stream = new MemoryStream())
-                {
-                    await file.CopyToAsync(stream);
-                    using (var package = new ExcelPackage(stream))
-                    {
-                        var worksheet = package.Workbook.Worksheets[0];
-                        int rowCount = worksheet.Dimension.Rows;
-
-                        for (int row = 1; row <= rowCount; row++) // Assuming row 1 is header
-                        {
-                            string deptName = worksheet.Cells[row, 1].Value?.ToString();
-
-                            if (!string.IsNullOrWhiteSpace(deptName))
-                            {
-                                // Option 1: Using repository
-                                var department = new Department { Name = deptName };
-                                await db.Database.ExecuteSqlRawAsync("EXEC CreateDepartment @p0", department.Name);
-                            }
-                        }
-                    }
-                }
-
-                TempData["success"] = "Departments imported successfully!";
-            }
-            else
-            {
-                TempData["error"] = "Please select a valid Excel file.";
-            }
-
-            return RedirectToAction(nameof(Index));
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         //[HttpPost]
@@ -186,7 +135,7 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var department = await db.departments.FindAsync(id);
+            var department = await db.department.FindAsync(id);
             if (department == null)
             {
                 return NotFound();
@@ -237,7 +186,7 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var department = await db.departments
+            var department = await db.department
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (department == null)
             {
@@ -249,23 +198,24 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
 
         // POST: Admin/Department/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var department = await unitOfWork.department.Get(x=>x.Id==id);
             if (department != null)
             {
-                TempData["success"] = "Department Removed Successfully!";
+                //TempData["success"] = "Department Removed Successfully!";
                 await unitOfWork.department.Remove(department);
             }
 
-            await db.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            unitOfWork.Save();
+            return Json(new { success = "Department Removed Successfully!" });
+            //return RedirectToAction(nameof(Index));
         }
 
         private bool DepartmentExists(int id)
         {
-            return db.departments.Any(e => e.Id == id);
+            return db.department.Any(e => e.Id == id);
         }
     }
 }

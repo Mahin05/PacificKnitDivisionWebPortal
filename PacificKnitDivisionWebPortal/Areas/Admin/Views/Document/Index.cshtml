@@ -55,9 +55,10 @@
                         @Html.DisplayFor(modelItem => item.IsDelete)
                     </td>
                     <td>
-                        <a class="btn btn-success" asp-action="Upsert" asp-route-id="@item.Id">Edit</a> |
+                        <a class="btn btn-secondary" href="@item.FileUrl"><i class="bi bi-eye-fill"></i></a> |
+                        <a class="btn btn-success" asp-action="Upsert" asp-route-id="@item.Id"><i class="bi bi-pen-fill"></i></a> |
                         @* <a asp-action="Details" asp-route-id="@item.Id">Details</a> | *@
-                        <a href="#" class="btn btn-danger delete-button" data-id="@item.Id">Delete</a>
+                        <a href="#" class="btn btn-danger delete-button" data-id="@item.Id"><i class="bi bi-trash-fill"></i></a>
                      @*    <a class="btn btn-danger delete-button" asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
                     </td>
                 </tr>
@@ -78,8 +79,6 @@
                 e.preventDefault();
 
                  var id = $(this).data('id');
-
-                alert("id",id);
 
                 Swal.fire({
                     title: "Are you sure?",

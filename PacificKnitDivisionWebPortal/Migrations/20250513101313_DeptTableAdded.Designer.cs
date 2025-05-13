@@ -12,8 +12,8 @@ using PacificKnitDivisionWebPortal.Data;
 namespace PacificKnitDivisionWebPortal.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20250512063844_DepartmentTableAdded")]
-    partial class DepartmentTableAdded
+    [Migration("20250513101313_DeptTableAdded")]
+    partial class DeptTableAdded
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -237,7 +237,7 @@ namespace PacificKnitDivisionWebPortal.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("departments");
+                    b.ToTable("department");
                 });
 
             modelBuilder.Entity("PacificKnitDivisionWebPortal.Models.DocumentModel", b =>

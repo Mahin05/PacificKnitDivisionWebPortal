@@ -5,13 +5,13 @@
 namespace PacificKnitDivisionWebPortal.Migrations
 {
     /// <inheritdoc />
-    public partial class DepartmentTableAdded : Migration
+    public partial class DeptTableAdded : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "departments",
+                name: "department",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -20,7 +20,7 @@ namespace PacificKnitDivisionWebPortal.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_departments", x => x.Id);
+                    table.PrimaryKey("PK_department", x => x.Id);
                 });
         }
 
@@ -28,7 +28,7 @@ namespace PacificKnitDivisionWebPortal.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "departments");
+                name: "department");
         }
     }
 }
