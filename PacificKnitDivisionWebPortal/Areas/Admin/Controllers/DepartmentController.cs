@@ -115,7 +115,7 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                         var worksheet = package.Workbook.Worksheets[0];
                         int rowCount = worksheet.Dimension.Rows;
 
-                        for (int row = 2; row <= rowCount; row++) // Assuming row 1 is header
+                        for (int row = 1; row <= rowCount; row++) // Assuming row 1 is header
                         {
                             string deptName = worksheet.Cells[row, 1].Value?.ToString();
 

@@ -91,80 +91,87 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                var wwwRootPath = _webHostEnvironment.WebRootPath;
-                if (file != null)
+                try
                 {
-                    if (document.FileType == "Notice")
+                    var wwwRootPath = _webHostEnvironment.WebRootPath;
+                    if (file != null)
                     {
-                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                        var documentFolder = Path.Combine(wwwRootPath, @"Assets\Notice\");
-                        if (!string.IsNullOrEmpty(document.FileUrl))
+                        if (document.FileType == "Notice")
                         {
-                            var oldImagePath = Path.Combine(wwwRootPath, document.FileUrl.TrimStart('\\'));
-                            if (System.IO.File.Exists(oldImagePath))
+                            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                            var documentFolder = Path.Combine(wwwRootPath, @"Assets\Notice\");
+                            if (!string.IsNullOrEmpty(document.FileUrl))
                             {
-                                System.IO.File.Delete(oldImagePath);
+                                var oldImagePath = Path.Combine(wwwRootPath, document.FileUrl.TrimStart('\\'));
+                                if (System.IO.File.Exists(oldImagePath))
+                                {
+                                    System.IO.File.Delete(oldImagePath);
+                                }
                             }
+                            using (var fileStream = new FileStream(Path.Combine(documentFolder, fileName), FileMode.Create))
+                            {
+                                file.CopyTo(fileStream);
+                            }
+                            document.FileUrl = @"\Assets\Notice\" + fileName;
                         }
-                        using (var fileStream = new FileStream(Path.Combine(documentFolder, fileName), FileMode.Create))
+                        if (document.FileType == "Info")
                         {
-                            file.CopyTo(fileStream);
+                            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                            var documentFolder = Path.Combine(wwwRootPath, @"Assets\Info\");
+                            if (!string.IsNullOrEmpty(document.FileUrl))
+                            {
+                                var oldImagePath = Path.Combine(wwwRootPath, document.FileUrl.TrimStart('\\'));
+                                if (System.IO.File.Exists(oldImagePath))
+                                {
+                                    System.IO.File.Delete(oldImagePath);
+                                }
+                            }
+                            using (var fileStream = new FileStream(Path.Combine(documentFolder, fileName), FileMode.Create))
+                            {
+                                file.CopyTo(fileStream);
+                            }
+                            document.FileUrl = @"\Assets\Info\" + fileName;
+
                         }
-                        document.FileUrl = @"\Assets\Notice\" + fileName;
+                        if (document.FileType == "Files")
+                        {
+                            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                            var documentFolder = Path.Combine(wwwRootPath, @"Assets\Info\");
+                            if (!string.IsNullOrEmpty(document.FileUrl))
+                            {
+                                var oldImagePath = Path.Combine(wwwRootPath, document.FileUrl.TrimStart('\\'));
+                                if (System.IO.File.Exists(oldImagePath))
+                                {
+                                    System.IO.File.Delete(oldImagePath);
+                                }
+                            }
+                            using (var fileStream = new FileStream(Path.Combine(documentFolder, fileName), FileMode.Create))
+                            {
+                                file.CopyTo(fileStream);
+                            }
+                            document.FileUrl = @"\Assets\Info\" + fileName;
+
+                        }
                     }
-                    if (document.FileType == "Info")
+
+
+                    if (document.Id == null)
                     {
-                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                        var documentFolder = Path.Combine(wwwRootPath, @"Assets\Info\");
-                        if (!string.IsNullOrEmpty(document.FileUrl))
-                        {
-                            var oldImagePath = Path.Combine(wwwRootPath, document.FileUrl.TrimStart('\\'));
-                            if (System.IO.File.Exists(oldImagePath))
-                            {
-                                System.IO.File.Delete(oldImagePath);
-                            }
-                        }
-                        using (var fileStream = new FileStream(Path.Combine(documentFolder, fileName), FileMode.Create))
-                        {
-                            file.CopyTo(fileStream);
-                        }
-                        document.FileUrl = @"\Assets\Info\" + fileName;
-
+                        TempData["success"] = "Product Created Successfully!";
+                        unitOfWork.Document.Add(document);
                     }
-                    if (document.FileType == "Files")
+                    else
                     {
-                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                        var documentFolder = Path.Combine(wwwRootPath, @"Assets\Info\");
-                        if (!string.IsNullOrEmpty(document.FileUrl))
-                        {
-                            var oldImagePath = Path.Combine(wwwRootPath, document.FileUrl.TrimStart('\\'));
-                            if (System.IO.File.Exists(oldImagePath))
-                            {
-                                System.IO.File.Delete(oldImagePath);
-                            }
-                        }
-                        using (var fileStream = new FileStream(Path.Combine(documentFolder, fileName), FileMode.Create))
-                        {
-                            file.CopyTo(fileStream);
-                        }
-                        document.FileUrl = @"\Assets\Info\" + fileName;
-
+                        TempData["success"] = "Product Updated Successfully!";
+                        unitOfWork.Document.Update(document);
                     }
-                }
+                    unitOfWork.Save();
+                    return RedirectToAction(nameof(Index));
 
-
-                if (document.Id == null)
-                {
-                    TempData["success"] = "Product Created Successfully!";
-                    unitOfWork.Document.Add(document);
                 }
-                else
-                {
-                    TempData["success"] = "Product Updated Successfully!";
-                    unitOfWork.Document.Update(document);
+                catch (Exception ex) {
+                    TempData["error"] = "Something went wrong!";
                 }
-                unitOfWork.Save();
-                return RedirectToAction(nameof(Index));
             }
             return View(document);
         }
