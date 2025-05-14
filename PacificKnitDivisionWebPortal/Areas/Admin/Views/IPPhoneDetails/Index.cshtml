@@ -5,54 +5,30 @@
 }
 <div class="main-div">
     <h1 class="text-center">IP Phone Details List</h1>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <p>
+                <a class="btn btn-primary" asp-action="Upsert">Create New</a>
+            </p>
+        </div>
+        <div class="col-md-6 mt-2">
+            <div class="float-end">
+                <select id="dept" class="w-25">
+                    <option value="0">All Department</option>
+                </select>
+                <select id="unit">
+                    <option value="0">All Unit</option>
+                    <option value="1">PKL</option>
+                    <option value="1">PCL1</option>
+                    <option value="1">PCL2</option>
+                </select>
+                <input id="SearchText" /> <button id="Search" class="btn-primary border-0 text-bg-info">Search</button>
 
-    <p>
-        <a class="btn btn-primary" asp-action="Upsert">Create New</a>
-    </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.IPNo)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DisplayName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Unit)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Department)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.IPNo)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DisplayName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Unit)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Department.Name)
-                    </td>
-                    <td>
-
-                        <a class="btn btn-success" asp-action="Upsert" asp-route-id="@item.Id"><i class="bi bi-pen-fill"></i></a> |
-                        <a href="#" class="btn btn-danger delete-button" data-id="@item.Id"><i class="bi bi-trash-fill"></i></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
+            </div>
+        </div>
+    </div>
+  
+    <div id="ipphonedetails-table"></div>
 </div>
 
 
@@ -61,7 +37,209 @@
 @section Scripts {
     <script type="text/javascript">
          $(document).ready(function () {
-            $('.delete-button').click(function (e) {
+
+             //first load data=======================================
+             $.ajax({
+                url: '/Admin/IPPhoneDetails/GetAllIPPhoneDetails',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if(response.dept){
+                        //console.log("dept",response.dept);
+                           $.each(response.dept, function (i, dept) {
+                            $('#dept').append($('<option>', {
+                                value: dept.id,
+                                text: dept.name
+                            }));
+                        });
+                    }
+                    if (response.data) {
+                        //console.log(response.data);
+                        //Build Tabulator
+                            table = new Tabulator("#ipphonedetails-table", {
+                            height: "411px",
+                            data: response.data,
+                            layout: "fitColumns",
+                            placeholder: "No Data Set",
+                            pagination: "local",
+                            paginationSize: 20,
+                            paginationSizeSelector: [3, 6, 8, 10],
+                            movableColumns: true,
+                            paginationCounter: "rows",
+                            columns: [
+                                { title: "Department", field: "department.name", sorter: "string"/* , width: 200  */},
+                                { title: "IP No.", field: "ipNo", sorter: "string"/* , width: 200  */},
+                                { title: "Display Name", field: "displayName", sorter: "string"/* , width: 200  */},
+                                { title: "Unit", field: "unit", sorter: "string"/* , width: 200  */},
+                                {
+                                    title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
+                                        var id = cell.getRow().getData().id;
+                                        return `<a href='/Admin/IPPhoneDetails/Upsert/${id}' class='btn btn-sm btn-success'><i class="bi bi-pen-fill"></i></a> <a class='btn btn-sm btn-danger delete-button' data-id='${id}'><i class="bi bi-trash-fill"></i></a>
+
+                                        `;
+                                    }
+                                }
+                            ],
+                        });
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+
+        var table;
+        //drop for department===================================================
+        $("#dept").on("change", function () {
+            var value = $(this).val();
+            $.ajax({
+                url: '/Admin/IPPhoneDetails/GetIPDetailsByDepartment?value=' + value,
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    //console.log("responsedata", response);
+                    if (response.data) {
+                        //console.log(response.data);
+                        //Build Tabulator
+                            table = new Tabulator("#ipphonedetails-table", {
+                            height: "411px",
+                            data: response.data,
+                            layout: "fitColumns",
+                            placeholder: "No Data Set",
+                            pagination: "local",
+                            paginationSize: 20,
+                            paginationSizeSelector: [3, 6, 8, 10],
+                            movableColumns: true,
+                            paginationCounter: "rows",
+                            columns: [
+                                { title: "Department", field: "department.name", sorter: "string"/* , width: 200  */},
+                                { title: "IP No.", field: "ipNo", sorter: "string"/* , width: 200  */},
+                                { title: "Display Name", field: "displayName", sorter: "string"/* , width: 200  */},
+                                { title: "Unit", field: "unit", sorter: "string"/* , width: 200  */},
+                                {
+                                    title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
+                                        var id = cell.getRow().getData().id;
+                                        return `<a href='/Admin/IPPhoneDetails/Upsert/${id}' class='btn btn-sm btn-success'><i class="bi bi-pen-fill"></i></a> <a class='btn btn-sm btn-danger delete-button' data-id='${id}'><i class="bi bi-trash-fill"></i></a>
+
+                                        `;
+                                    }
+                                }
+                            ],
+                        });
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        });
+        //drop for unit===================================================
+        $("#unit").on("change", function () {
+            var value = $("#unit option:selected").text();
+            $.ajax({
+                url: '/Admin/IPPhoneDetails/GetIPDetailsByUnit?value=' + value,
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    //console.log("responsedata", response);
+                    if (response.data) {
+                        //console.log(response.data);
+                        //Build Tabulator
+                            table = new Tabulator("#ipphonedetails-table", {
+                            height: "411px",
+                            data: response.data,
+                            layout: "fitColumns",
+                            placeholder: "No Data Set",
+                            pagination: "local",
+                            paginationSize: 20,
+                            paginationSizeSelector: [3, 6, 8, 10],
+                            movableColumns: true,
+                            paginationCounter: "rows",
+                            columns: [
+                                { title: "Department", field: "department.name", sorter: "string"/* , width: 200  */},
+                                { title: "IP No.", field: "ipNo", sorter: "string"/* , width: 200  */},
+                                { title: "Display Name", field: "displayName", sorter: "string"/* , width: 200  */},
+                                { title: "Unit", field: "unit", sorter: "string"/* , width: 200  */},
+                                {
+                                    title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
+                                        var id = cell.getRow().getData().id;
+                                        return `<a href='/Admin/IPPhoneDetails/Upsert/${id}' class='btn btn-sm btn-success'><i class="bi bi-pen-fill"></i></a> <a class='btn btn-sm btn-danger delete-button' data-id='${id}'><i class="bi bi-trash-fill"></i></a>
+
+                                        `;
+                                    }
+                                }
+                            ],
+                        });
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        });
+
+        //search===================================================
+        $("#Search").on("click", function () {
+            var value = $("#SearchText").val();
+            //console.log(value);
+
+            $.ajax({
+                url: '/Admin/IPPhoneDetails/GetAllSearch?value='+value,
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    //console.log("responsedata", response);
+                    if (response.data) {
+                        //console.log(response.data);
+                        //Build Tabulator
+                            table = new Tabulator("#ipphonedetails-table", {
+                            height: "411px",
+                            data: response.data,
+                            layout: "fitColumns",
+                            placeholder: "No Data Set",
+                            pagination: "local",
+                            paginationSize: 20,
+                            paginationSizeSelector: [3, 6, 8, 10],
+                            movableColumns: true,
+                            paginationCounter: "rows",
+                            columns: [
+                                { title: "Department", field: "department.name", sorter: "string"/* , width: 200  */},
+                                { title: "IP No.", field: "ipNo", sorter: "string"/* , width: 200  */},
+                                { title: "Display Name", field: "displayName", sorter: "string"/* , width: 200  */},
+                                { title: "Unit", field: "unit", sorter: "string"/* , width: 200  */},
+                                {
+                                    title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
+                                        var id = cell.getRow().getData().id;
+                                        return `<a href='/Admin/IPPhoneDetails/Upsert/${id}' class='btn btn-sm btn-success'><i class="bi bi-pen-fill"></i></a> <a class='btn btn-sm btn-danger delete-button' data-id='${id}'><i class="bi bi-trash-fill"></i></a>
+
+                                        `;
+                                    }
+                                }
+                            ],
+                        });
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        });
+
+
+            //delete functionalities==================================
+            $(document).on('click', '.delete-button', function (e) {
                 e.preventDefault();
 
                  var id = $(this).data('id');
@@ -109,5 +287,6 @@
                 });
             });
         });
+
     </script>
 }

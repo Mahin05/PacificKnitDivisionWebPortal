@@ -28,8 +28,8 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         // GET: Admin/IPPhoneDetails
         public async Task<IActionResult> Index()
         {
-            var applicationDBContext = _context.ipphoneDetails.Include(i => i.Department);
-            return View(await applicationDBContext.ToListAsync());
+            var list = unitOfWork.iPPhoneDetails.GetAll().Include(i => i.Department);
+            return View(await list.ToListAsync());
         }
 
         // GET: Admin/IPPhoneDetails/Details/5
@@ -212,19 +212,80 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var iPPhoneDetails = await _context.ipphoneDetails.FindAsync(id);
+            var iPPhoneDetails = await unitOfWork.iPPhoneDetails.Get(x=>x.Id==id);
             if (iPPhoneDetails != null)
             {
-                _context.ipphoneDetails.Remove(iPPhoneDetails);
+                await unitOfWork.iPPhoneDetails.Remove(iPPhoneDetails);
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            unitOfWork.Save();
+            return Json(new { success = "IP Phone Removed Successfully!" });
+            //return RedirectToAction(nameof(Index));
         }
 
         private bool IPPhoneDetailsExists(int id)
         {
             return _context.ipphoneDetails.Any(e => e.Id == id);
         }
+
+        #region API
+        [HttpGet]
+        public IActionResult GetAllIPPhoneDetails()
+        {
+            var iPPhoneDetails = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department);
+            var department = unitOfWork.department.GetAll();
+            return Json(new { data = iPPhoneDetails,dept = department });
+        }
+        [HttpGet]
+        public IActionResult GetIPDetailsByDepartment(int value)
+        {
+            if (value == 0)
+            {
+                var iPPhoneDetails = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department);
+                return Json(new { data = iPPhoneDetails });
+            }
+            else
+            {
+                var iPPhoneDetails = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x => x.DeptId == value);
+                return Json(new { data = iPPhoneDetails });
+            }
+                
+        }
+        [HttpGet]
+        public IActionResult GetIPDetailsByUnit(string value)
+        {
+            if(value=="All Unit")
+            {
+
+                var iPPhoneDetails = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department);
+                return Json(new { data = iPPhoneDetails });
+            }
+            else
+            {
+                var iPPhoneDetails = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x => x.Unit == value);
+                return Json(new { data = iPPhoneDetails });
+            }
+                
+        }
+
+        [HttpGet]
+        public IActionResult GetAllSearch(string value)
+        {
+            if (value == null)
+            {
+                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department);
+                return Json(new { data = products });
+            }
+            else
+            {
+                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(
+                    x => x.DisplayName.Contains(value) ||
+                    x.IPNo.Contains(value)
+                    );
+                return Json(new { data = products });
+            }
+
+        }
+        #endregion
     }
 }
