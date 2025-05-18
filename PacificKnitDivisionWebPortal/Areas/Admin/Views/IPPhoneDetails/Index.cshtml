@@ -10,6 +10,9 @@
             <p>
                 <a class="btn btn-primary" asp-action="Upsert">Create New</a>
             </p>
+            <p>
+                <a class="btn btn-primary" asp-action="ViewPdf">View</a>
+            </p>
         </div>
         <div class="col-md-6 mt-2">
             <div class="float-end">
@@ -57,7 +60,7 @@
                         //console.log(response.data);
                         //Build Tabulator
                             table = new Tabulator("#ipphonedetails-table", {
-                            height: "411px",
+                            height: "800px",
                             data: response.data,
                             layout: "fitColumns",
                             placeholder: "No Data Set",
@@ -105,7 +108,7 @@
                         //console.log(response.data);
                         //Build Tabulator
                             table = new Tabulator("#ipphonedetails-table", {
-                            height: "411px",
+                            height: "800px",
                             data: response.data,
                             layout: "fitColumns",
                             placeholder: "No Data Set",
@@ -152,7 +155,7 @@
                         //console.log(response.data);
                         //Build Tabulator
                             table = new Tabulator("#ipphonedetails-table", {
-                            height: "411px",
+                            height: "800px",
                             data: response.data,
                             layout: "fitColumns",
                             placeholder: "No Data Set",

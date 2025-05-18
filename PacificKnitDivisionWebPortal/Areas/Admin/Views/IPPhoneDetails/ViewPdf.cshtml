@@ -1,0 +1,402 @@
+﻿@{
+    ViewBag.HideLayoutParts = true;
+}
+<style>
+	table, th, td {
+		border: 1px solid black;
+	}
+</style>
+<button id="download-pdf">Download PDF</button>
+
+<div class="main-div py-5" style="font-size:10px">
+    <table style="width:50%;margin-left:auto;margin-right:auto">
+        <tr class="text-center">
+            <th style="background-color: #061640;
+    color: white;
+    font-size: 12px;">Pacific Knit Division IP phone Index</th>
+        </tr>
+    </table>
+
+
+    @* ------------------table for PKL STARTS--------------------- *@
+    <table style="width:50%;margin-left:auto;margin-right:auto">
+        <tr class="text-center">
+            <th style="background-color: #248fbbe0;
+    color: white;
+    font-size: 12px;">Pacific Knitex Ltd.</th>
+        </tr>
+    </table>
+    <table style="width:50%;margin-left:auto;margin-right:auto">
+        <tr class="text-center">
+            <th style="width:120px;background-color:#ffb938">Department</th>
+            <th style=background-color:#ffb938>IP No.</th>
+            <th style=background-color:#ffb938>Display Name</th>
+            <th style=background-color:#ffb938>Unit</th>
+        </tr>
+        <tbody id="PKL-BOD">
+        </tbody>
+        <tbody id="PKL-RestData">
+        </tbody>
+    </table>
+    @* ------------------table for PKL ENDS--------------------- *@
+
+
+    @* ------------------table for PCL1 STARTS--------------------- *@
+    <table style="width:50%;margin-left:auto;margin-right:auto" class="mt-5">
+        <tr class="text-center">
+            <th style="background-color: #248fbbe0;
+    color: white;
+    font-size: 12px;">Pacific Casuals Ltd.(Unit-1)</th>
+        </tr>
+    </table>
+    <table style="width:50%;margin-left:auto;margin-right:auto">
+        <tr class="text-center">
+            <th style="width:120px;background-color:#ffb938">Department</th>
+            <th style=background-color:#ffb938>IP No.</th>
+            <th style=background-color:#ffb938>Display Name</th>
+            <th style=background-color:#ffb938>Unit</th>
+        </tr>
+        <tbody id="PCL1-BOD">
+        </tbody>
+        <tbody id="PCL1-RestData">
+        </tbody>
+    </table>
+    @* ------------------table for PCL1 ENDS--------------------- *@
+
+
+    @* ------------------table for PCL2 STARTS--------------------- *@
+    <table style="width:50%;margin-left:auto;margin-right:auto" class="mt-5">
+        <tr class="text-center">
+            <th style="background-color: #248fbbe0;
+    color: white;
+    font-size: 12px;">Pacific Casuals Ltd.(Unit-2)</th>
+        </tr>
+    </table>
+    <table style="width:50%;margin-left:auto;margin-right:auto">
+        <tr class="text-center">
+            <th style="width:120px;background-color:#ffb938">Department</th>
+            <th style=background-color:#ffb938>IP No.</th>
+            <th style=background-color:#ffb938>Display Name</th>
+            <th style=background-color:#ffb938>Unit</th>
+        </tr>
+        <tbody id="PCL2-RestData">
+        </tbody>
+    </table>
+    @* ------------------table for PCL2 ENDS--------------------- *@
+</div>
+
+@section Scripts {
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script type="text/javascript">
+         $(document).ready(function () {
+
+             //=======================PKL load data STARTS=======================================
+             function LoadPKLData(){
+             $.ajax({
+                url: '/Admin/IPPhoneDetails/GetIPPhoneOfPKL',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.data) {
+                      //console.log(response.data.result);
+                      var dataList = response.data.result;
+                      var dataArray = response.data.result;
+                        let bodData = dataArray.filter(item => item.name === "BoD");
+                        let PKLBOD = document.getElementById("PKL-BOD");
+
+                        bodData.forEach((data, index) => {
+                            let tr;
+                            if (index === 0) {
+                            // First row with rowspan and name
+                            tr = `
+                                <tr>
+                                <td rowspan="${bodData.length}" class="text-center fw-bold">${data.name}</td>
+                                <td class="text-center fw-bold">${data.ipNo}</td>
+                                <td>${data.displayName}</td>
+                                <td class="text-center">${data.unit}</td>
+                                </tr>
+                            `;
+                            } else {
+                            // Other rows without name
+                            tr = `
+                                <tr>
+                                <td class="text-center fw-bold">${data.ipNo}</td>
+                                <td>${data.displayName}</td>
+                                <td class="text-center">${data.unit}</td>
+                                </tr>
+                            `;
+                            }
+
+                            PKLBOD.insertAdjacentHTML('beforeend', tr);
+                        });
+
+
+
+
+                        let groupedData = {}; // Group by name (e.g., HR, ICT)
+                            dataArray.forEach(item => {
+                                if (item.name !== "BoD") {
+                                if (!groupedData[item.name]) {
+                                    groupedData[item.name] = [];
+                                }
+                                groupedData[item.name].push(item);
+                                }
+                            });
+
+                            let restTbody = document.getElementById("PKL-RestData");
+
+                            for (let name in groupedData) {
+                                let group = groupedData[name];
+                                group.forEach((item, index) => {
+                                let tr = document.createElement('tr');
+
+                                if (index === 0) {
+                                    // First row gets the name with rowspan
+                                    let tdName = `<td rowspan="${group.length}" class="text-center fw-bold">${item.name}</td>`;
+                                    tr.innerHTML = `
+                                    ${tdName}
+                                    <td class="text-center fw-bold">${item.ipNo}</td>
+                                    <td>${item.displayName}</td>
+                                    <td class="text-center">${item.unit}</td>
+                                    `;
+                                } else {
+                                    // Next rows do not repeat the name
+                                    tr.innerHTML = `
+                                    <td class="text-center fw-bold">${item.ipNo}</td>
+                                    <td>${item.displayName}</td>
+                                    <td class="text-center">${item.unit}</td>
+                                    `;
+                                }
+
+                                restTbody.appendChild(tr);
+                                });
+                            }
+
+
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+             }
+             //=======================PKL load data ENDS=========================================
+
+             //=======================PCL1 load data STARTS=======================================
+             function LoadPCL1Data(){
+                 $.ajax({
+                url: '/Admin/IPPhoneDetails/GetIPPhoneOfPCL1',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.data) {
+                      //console.log(response.data.result);
+                      var dataList = response.data.result;
+                      var dataArray = response.data.result;
+                        let bodData = dataArray.filter(item => item.name === "BoD");
+                        let PKLBOD = document.getElementById("PCL1-BOD");
+
+                        bodData.forEach((data, index) => {
+                            let tr;
+                            if (index === 0) {
+                            // First row with rowspan and name
+                            tr = `
+                                <tr>
+                                <td rowspan="${bodData.length}" class="text-center fw-bold">${data.name}</td>
+                                <td class="text-center fw-bold">${data.ipNo}</td>
+                                <td>${data.displayName}</td>
+                                <td class="text-center">${data.unit}</td>
+                                </tr>
+                            `;
+                            } else {
+                            // Other rows without name
+                            tr = `
+                                <tr>
+                                <td class="text-center fw-bold">${data.ipNo}</td>
+                                <td>${data.displayName}</td>
+                                <td class="text-center">${data.unit}</td>
+                                </tr>
+                            `;
+                            }
+
+                            PKLBOD.insertAdjacentHTML('beforeend', tr);
+                        });
+
+
+
+
+                        let groupedData = {}; // Group by name (e.g., HR, ICT)
+                            dataArray.forEach(item => {
+                                if (item.name !== "BoD") {
+                                if (!groupedData[item.name]) {
+                                    groupedData[item.name] = [];
+                                }
+                                groupedData[item.name].push(item);
+                                }
+                            });
+
+                            let restTbody = document.getElementById("PCL1-RestData");
+
+                            for (let name in groupedData) {
+                                let group = groupedData[name];
+                                group.forEach((item, index) => {
+                                let tr = document.createElement('tr');
+
+                                if (index === 0) {
+                                    // First row gets the name with rowspan
+                                    let tdName = `<td rowspan="${group.length}" class="text-center fw-bold">${item.name}</td>`;
+                                    tr.innerHTML = `
+                                    ${tdName}
+                                    <td class="text-center fw-bold">${item.ipNo}</td>
+                                    <td>${item.displayName}</td>
+                                    <td class="text-center">${item.unit}</td>
+                                    `;
+                                } else {
+                                    // Next rows do not repeat the name
+                                    tr.innerHTML = `
+                                    <td class="text-center fw-bold">${item.ipNo}</td>
+                                    <td>${item.displayName}</td>
+                                    <td class="text-center">${item.unit}</td>
+                                    `;
+                                }
+
+                                restTbody.appendChild(tr);
+                                });
+                            }
+
+
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+             }
+             
+             //=======================PCL1 load data ENDS=========================================
+
+             //=======================PCL2 load data STARTS=======================================
+             function LoadPCL2Data(){
+                   $.ajax({
+                url: '/Admin/IPPhoneDetails/GetIPPhoneOfPCL2',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.data) {
+                      //console.log(response.data.result);
+                      var dataList = response.data.result;
+                      var dataArray = response.data.result;
+                        let bodData = dataArray.filter(item => item.name === "BoD");
+                        let PKLBOD = document.getElementById("PCL2-BOD");
+
+                        bodData.forEach((data, index) => {
+                            let tr;
+                            if (index === 0) {
+                            // First row with rowspan and name
+                            tr = `
+                                <tr>
+                                <td rowspan="${bodData.length}" class="text-center fw-bold">${data.name}</td>
+                                <td class="text-center fw-bold">${data.ipNo}</td>
+                                <td>${data.displayName}</td>
+                                <td class="text-center">${data.unit}</td>
+                                </tr>
+                            `;
+                            } else {
+                            // Other rows without name
+                            tr = `
+                                <tr>
+                                <td class="text-center fw-bold">${data.ipNo}</td>
+                                <td>${data.displayName}</td>
+                                <td class="text-center">${data.unit}</td>
+                                </tr>
+                            `;
+                            }
+
+                            PKLBOD.insertAdjacentHTML('beforeend', tr);
+                        });
+
+
+
+
+                        let groupedData = {}; // Group by name (e.g., HR, ICT)
+                            dataArray.forEach(item => {
+                                if (item.name !== "BoD") {
+                                if (!groupedData[item.name]) {
+                                    groupedData[item.name] = [];
+                                }
+                                groupedData[item.name].push(item);
+                                }
+                            });
+
+                            let restTbody = document.getElementById("PCL2-RestData");
+
+                            for (let name in groupedData) {
+                                let group = groupedData[name];
+                                group.forEach((item, index) => {
+                                let tr = document.createElement('tr');
+
+                                if (index === 0) {
+                                    // First row gets the name with rowspan
+                                    let tdName = `<td rowspan="${group.length}" class="text-center fw-bold">${item.name}</td>`;
+                                    tr.innerHTML = `
+                                    ${tdName}
+                                    <td class="text-center fw-bold">${item.ipNo}</td>
+                                    <td>${item.displayName}</td>
+                                    <td class="text-center">${item.unit}</td>
+                                    `;
+                                } else {
+                                    // Next rows do not repeat the name
+                                    tr.innerHTML = `
+                                    <td class="text-center fw-bold">${item.ipNo}</td>
+                                    <td>${item.displayName}</td>
+                                    <td class="text-center">${item.unit}</td>
+                                    `;
+                                }
+
+                                restTbody.appendChild(tr);
+                                });
+                            }
+
+
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+             }
+             
+             //=======================PCL2 load data ENDS=========================================
+
+
+             LoadPKLData();
+             LoadPCL1Data();
+             LoadPCL2Data();
+        });
+                  document.getElementById("download-pdf").addEventListener("click", function () {
+          var element = document.querySelector(".main-div");
+
+          var opt = {
+            margin:       [0.4, 0.4, 0.4, 0.4],  // top, left, bottom, right (inches)
+            filename:     'document.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 3, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+          };
+
+          html2pdf().set(opt).from(element).save();
+        });
+
+
+    </script>
+}
