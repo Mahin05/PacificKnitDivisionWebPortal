@@ -6,9 +6,10 @@
 		border: 1px solid black;
 	}
 </style>
+<a class="btn btn-link text-info" asp-area="admin" asp-action="Index">Go Back</a>
 <button id="download-pdf">Download PDF</button>
 
-<div class="main-div py-5" style="font-size:10px">
+<div class="main-div" style="font-size:10px">
     <table style="width:65%;margin-left:auto;margin-right:auto">
         <tr class="text-center">
             <th style="background-color: #061640;
@@ -360,9 +361,9 @@
 
           var opt = {
             margin:       [0.6, 0.1, 0.6, 0.1],  // top, left, bottom, right (inches)
-            filename:     'document.pdf',
-            image:        { type: 'jpeg', quality: 0.99 },
-            html2canvas:  { scale: 3, useCORS: true },
+            filename:     'IP Phone Index.pdf',
+            image:        { type: 'jpeg', quality: 1.00 },
+            html2canvas:  { scale: 4, useCORS: true },
             jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
           };
 

@@ -1,0 +1,374 @@
+﻿@{
+    ViewBag.HideLayoutParts = true;
+}
+<style>
+	table, th, td {
+		border: 1px solid black;
+	}
+</style>
+<button id="download-pdf" class="d-none">Download PDF</button>
+
+<div class="main-div py-5" style="font-size:10px">
+    <table style="width:65%;margin-left:auto;margin-right:auto">
+        <tr class="text-center">
+            <th style="background-color: #061640;
+    color: white;
+    font-size: 12px;">Pacific Knit Division IP phone Index</th>
+        </tr>
+    </table>
+
+
+    @* ------------------table for PKL STARTS--------------------- *@
+    <table style="width:65%;margin-left:auto;margin-right:auto">
+        <tr class="text-center">
+            <th style="background-color: #248fbbe0;
+    color: white;
+    font-size: 12px;">Pacific Knitex Ltd.</th>
+        </tr>
+    </table>
+    <table style="width:65%;margin-left:auto;margin-right:auto">
+        <tr class="text-center">
+            <th style="width:120px;background-color:#ffb938">Department</th>
+            <th style=background-color:#ffb938>IP No.</th>
+            <th style=background-color:#ffb938>Display Name</th>
+            <th style=background-color:#ffb938>Unit</th>
+        </tr>
+        <tbody id="PKL-BOD">
+        </tbody>
+        <tbody id="PKL-RestData">
+        </tbody>
+    </table>
+    @* ------------------table for PKL ENDS--------------------- *@
+
+
+    @* ------------------table for PCL1 STARTS--------------------- *@
+    <table style="width:65%;margin-left:auto;margin-right:auto" class="mt-5">
+        <tr class="text-center">
+            <th style="background-color: #248fbbe0;
+    color: white;
+    font-size: 12px;">Pacific Casuals Ltd.(Unit-1)</th>
+        </tr>
+    </table>
+    <table style="width:65%;margin-left:auto;margin-right:auto">
+        <tr class="text-center">
+            <th style="width:120px;background-color:#ffb938">Department</th>
+            <th style=background-color:#ffb938>IP No.</th>
+            <th style=background-color:#ffb938>Display Name</th>
+            <th style=background-color:#ffb938>Unit</th>
+        </tr>
+        <tbody id="PCL1-BOD">
+        </tbody>
+        <tbody id="PCL1-RestData">
+        </tbody>
+    </table>
+    @* ------------------table for PCL1 ENDS--------------------- *@
+
+
+    @* ------------------table for PCL2 STARTS--------------------- *@
+    <table style="width:65%;margin-left:auto;margin-right:auto" class="mt-5">
+        <tr class="text-center">
+            <th style="background-color: #248fbbe0;
+    color: white;
+    font-size: 12px;">Pacific Casuals Ltd.(Unit-2)</th>
+        </tr>
+    </table>
+    <table style="width:65%;margin-left:auto;margin-right:auto">
+        <tr class="text-center">
+            <th style="width:120px;background-color:#ffb938">Department</th>
+            <th style=background-color:#ffb938>IP No.</th>
+            <th style=background-color:#ffb938>Display Name</th>
+            <th style=background-color:#ffb938>Unit</th>
+        </tr>
+        <tbody id="PCL2-RestData">
+        </tbody>
+    </table>
+    @* ------------------table for PCL2 ENDS--------------------- *@
+</div>
+
+@section Scripts {
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script type="text/javascript">
+         $(document).ready(function () {
+
+             //=======================PKD load data STARTS=======================================
+             function LoadPKDData(){
+             $.ajax({
+                url: '/Admin/IPPhoneDetails/GetIPPhoneOfPKD',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response) {
+                      console.log(response);
+                      //========================== pkl part starts================================
+                      var dataArrayPKL = response.table1;
+                        let bodDataPKL = dataArrayPKL.filter(item => item.name === "BoD");
+                        let PKLBOD = document.getElementById("PKL-BOD");
+                        bodDataPKL.forEach((data, index) => {
+                            let tr;
+                            if (index === 0) {
+                            // First row with rowspan and name
+                            tr = `
+                                <tr>
+                                <td rowspan="${bodDataPKL.length}" class="text-center fw-bold">${data.name}</td>
+                                <td class="text-center fw-bold">${data.ipNo}</td>
+                                <td>${data.displayName}</td>
+                                <td class="text-center">${data.unit}</td>
+                                </tr>
+                            `;
+                            } else {
+                            // Other rows without name
+                            tr = `
+                                <tr>
+                                <td class="text-center fw-bold">${data.ipNo}</td>
+                                <td>${data.displayName}</td>
+                                <td class="text-center">${data.unit}</td>
+                                </tr>
+                            `;
+                            }
+
+                            PKLBOD.insertAdjacentHTML('beforeend', tr);
+                        });
+
+
+
+
+                        let groupedDataPKL = {}; // Group by name (e.g., HR, ICT)
+                            dataArrayPKL.forEach(item => {
+                                if (item.name !== "BoD") {
+                                if (!groupedDataPKL[item.name]) {
+                                    groupedDataPKL[item.name] = [];
+                                }
+                                groupedDataPKL[item.name].push(item);
+                                }
+                            });
+
+                            let restTbodypkl = document.getElementById("PKL-RestData");
+
+                            for (let name in groupedDataPKL) {
+                                let group = groupedDataPKL[name];
+                                group.forEach((item, index) => {
+                                let tr = document.createElement('tr');
+
+                                if (index === 0) {
+                                    // First row gets the name with rowspan
+                                    let tdName = `<td rowspan="${group.length}" class="text-center fw-bold">${item.name}</td>`;
+                                    tr.innerHTML = `
+                                    ${tdName}
+                                    <td class="text-center fw-bold">${item.ipNo}</td>
+                                    <td>${item.displayName}</td>
+                                    <td class="text-center">${item.unit}</td>
+                                    `;
+                                } else {
+                                    // Next rows do not repeat the name
+                                    tr.innerHTML = `
+                                    <td class="text-center fw-bold">${item.ipNo}</td>
+                                    <td>${item.displayName}</td>
+                                    <td class="text-center">${item.unit}</td>
+                                    `;
+                                }
+
+                                restTbodypkl.appendChild(tr);
+                                });
+                            }
+                             //========================== pkl part ends================================
+
+
+
+
+
+
+                             //========================== pcl1 part starts================================
+                             var dataArrayPCL1 = response.table2;
+                        let bodDatapcl1 = dataArrayPCL1.filter(item => item.name === "BoD");
+                        let pclBOD = document.getElementById("PCL1-BOD");
+
+                        bodDatapcl1.forEach((data, index) => {
+                            let tr;
+                            if (index === 0) {
+                            // First row with rowspan and name
+                            tr = `
+                                <tr>
+                                <td rowspan="${bodDatapcl1.length}" class="text-center fw-bold">${data.name}</td>
+                                <td class="text-center fw-bold">${data.ipNo}</td>
+                                <td>${data.displayName}</td>
+                                <td class="text-center">${data.unit}</td>
+                                </tr>
+                            `;
+                            } else {
+                            // Other rows without name
+                            tr = `
+                                <tr>
+                                <td class="text-center fw-bold">${data.ipNo}</td>
+                                <td>${data.displayName}</td>
+                                <td class="text-center">${data.unit}</td>
+                                </tr>
+                            `;
+                            }
+
+                            pclBOD.insertAdjacentHTML('beforeend', tr);
+                        });
+
+
+
+
+                        let groupedDatapcl1 = {}; // Group by name (e.g., HR, ICT)
+                            dataArrayPCL1.forEach(item => {
+                                if (item.name !== "BoD") {
+                                if (!groupedDatapcl1[item.name]) {
+                                    groupedDatapcl1[item.name] = [];
+                                }
+                                groupedDatapcl1[item.name].push(item);
+                                }
+                            });
+
+                            let restTbodypcl1 = document.getElementById("PCL1-RestData");
+
+                            for (let name in groupedDatapcl1) {
+                                let group = groupedDatapcl1[name];
+                                group.forEach((item, index) => {
+                                let tr = document.createElement('tr');
+
+                                if (index === 0) {
+                                    // First row gets the name with rowspan
+                                    let tdName = `<td rowspan="${group.length}" class="text-center fw-bold">${item.name}</td>`;
+                                    tr.innerHTML = `
+                                    ${tdName}
+                                    <td class="text-center fw-bold">${item.ipNo}</td>
+                                    <td>${item.displayName}</td>
+                                    <td class="text-center">${item.unit}</td>
+                                    `;
+                                } else {
+                                    // Next rows do not repeat the name
+                                    tr.innerHTML = `
+                                    <td class="text-center fw-bold">${item.ipNo}</td>
+                                    <td>${item.displayName}</td>
+                                    <td class="text-center">${item.unit}</td>
+                                    `;
+                                }
+
+                                restTbodypcl1.appendChild(tr);
+                                });
+                            }
+
+                             //========================== pcl1 part ends================================
+
+
+
+
+
+
+
+
+                             //========================== pcl2 part starts================================
+                             var dataArraypcl2 = response.table3;
+                        let bodDatapcl2 = dataArraypcl2.filter(item => item.name === "BoD");
+                        let pcl2BOD = document.getElementById("PCL2-BOD");
+
+                        bodDatapcl2.forEach((data, index) => {
+                            let tr;
+                            if (index === 0) {
+                            // First row with rowspan and name
+                            tr = `
+                                <tr>
+                                <td rowspan="${bodDatapcl2.length}" class="text-center fw-bold">${data.name}</td>
+                                <td class="text-center fw-bold">${data.ipNo}</td>
+                                <td>${data.displayName}</td>
+                                <td class="text-center">${data.unit}</td>
+                                </tr>
+                            `;
+                            } else {
+                            // Other rows without name
+                            tr = `
+                                <tr>
+                                <td class="text-center fw-bold">${data.ipNo}</td>
+                                <td>${data.displayName}</td>
+                                <td class="text-center">${data.unit}</td>
+                                </tr>
+                            `;
+                            }
+
+                            pcl2BOD.insertAdjacentHTML('beforeend', tr);
+                        });
+
+
+
+
+                        let groupedDatapcl2 = {}; // Group by name (e.g., HR, ICT)
+                            dataArraypcl2.forEach(item => {
+                                if (item.name !== "BoD") {
+                                if (!groupedDatapcl2[item.name]) {
+                                    groupedDatapcl2[item.name] = [];
+                                }
+                                groupedDatapcl2[item.name].push(item);
+                                }
+                            });
+
+                            let restTbodypcl2 = document.getElementById("PCL2-RestData");
+
+                            for (let name in groupedDatapcl2) {
+                                let group = groupedDatapcl2[name];
+                                group.forEach((item, index) => {
+                                let tr = document.createElement('tr');
+
+                                if (index === 0) {
+                                    // First row gets the name with rowspan
+                                    let tdName = `<td rowspan="${group.length}" class="text-center fw-bold">${item.name}</td>`;
+                                    tr.innerHTML = `
+                                    ${tdName}
+                                    <td class="text-center fw-bold">${item.ipNo}</td>
+                                    <td>${item.displayName}</td>
+                                    <td class="text-center">${item.unit}</td>
+                                    `;
+                                } else {
+                                    // Next rows do not repeat the name
+                                    tr.innerHTML = `
+                                    <td class="text-center fw-bold">${item.ipNo}</td>
+                                    <td>${item.displayName}</td>
+                                    <td class="text-center">${item.unit}</td>
+                                    `;
+                                }
+
+                                restTbodypcl2.appendChild(tr);
+                                });
+                            }
+
+
+                             //========================== pcl2 part ends================================
+
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+             }
+             //=======================PKD load data ENDS=========================================
+
+             LoadPKDData();
+        });
+          
+        
+        
+        
+        
+        document.getElementById("download-pdf").addEventListener("click", function () {
+          var element = document.querySelector(".main-div");
+
+          var opt = {
+            margin:       [0.6, 0.1, 0.6, 0.1],  // top, left, bottom, right (inches)
+            filename:     'document.pdf',
+            image:        { type: 'jpeg', quality: 0.99 },
+            html2canvas:  { scale: 3, useCORS: true },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+          };
+
+          html2pdf().set(opt).from(element).save();
+        });
+
+
+    </script>
+}

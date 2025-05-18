@@ -313,32 +313,6 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                 }
             }
         }
-
-
-
-        [HttpGet]
-        public IActionResult GetIPPhoneOfPKL()
-        {
-            //var list = unitOfWork.iPPhoneDetails.GetAll().Include(i => i.Department);
-            var list = _context.IPPhoneListVM.FromSqlRaw("EXEC GetIPPhoneListPKL").ToArrayAsync();
-            return Json(new {data = list });
-        }
-        [HttpGet]
-        public IActionResult GetIPPhoneOfPCL1()
-        {
-            //var list = unitOfWork.iPPhoneDetails.GetAll().Include(i => i.Department);
-            var list = _context.IPPhoneListVM.FromSqlRaw("EXEC GetIPPhoneListPCL1").ToArrayAsync();
-            return Json(new {data = list });
-        }
-        [HttpGet]
-        public  IActionResult GetIPPhoneOfPCL2()
-        {
-            //var list = unitOfWork.iPPhoneDetails.GetAll().Include(i => i.Department);
-            var list = _context.IPPhoneListVM.FromSqlRaw("EXEC GetIPPhoneListPCL2").ToArrayAsync();
-            return Json(new {data = list });
-        }
-
-
         #endregion
     }
 }
