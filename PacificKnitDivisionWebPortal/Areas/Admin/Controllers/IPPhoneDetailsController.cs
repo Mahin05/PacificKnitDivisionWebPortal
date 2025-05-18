@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using OnlineBookOrderManagementSystem.Repositories.IRepository;
 using OnlineBookOrderManagementSystem.Repositories.Repository;
 using PacificKnitDivisionWebPortal.Data;
 using PacificKnitDivisionWebPortal.Models;
+using PacificKnitDivisionWebPortal.Models.ViewModels;
 
 namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
 {
@@ -290,6 +294,26 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
             }
 
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetIPPhoneOfPKD()
+        {
+            using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
+            {
+                await connection.OpenAsync();
+
+                using (var multi = await connection.QueryMultipleAsync("GetIPPhoneListPKD", commandType: CommandType.StoredProcedure))
+                {
+                    var table1 = (await multi.ReadAsync<IPPhoneViewModel>()).ToList();
+                    var table2 = (await multi.ReadAsync<IPPhoneViewModel>()).ToList();
+                    var table3 = (await multi.ReadAsync<IPPhoneViewModel>()).ToList();
+
+                    return Json(new {Table1 = table1,Table2 = table2,Table3 = table3});
+                }
+            }
+        }
+
 
 
         [HttpGet]
