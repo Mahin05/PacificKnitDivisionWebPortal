@@ -26,10 +26,9 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         }
 
         // GET: Admin/Department
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var departmentList = unitOfWork.department.GetAll().ToListAsync();
-            return View(await departmentList);
+            return View();
         }
 
         // GET: Admin/Department/Details/5
@@ -80,21 +79,39 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
             {
                 if (department.Id == null || department.Id == 0)
                 {
-                    TempData["success"] = "Department Created Successfully!";
+                    var DeptExist = unitOfWork.department.GetAll().FirstOrDefault(x => x.Name == department.Name);
+                    if (DeptExist == null)
+                    {
+                        TempData["success"] = "Department Created Successfully!";
 
-                    // Call stored procedure to insert
-                    await db.Database.ExecuteSqlRawAsync("EXEC CreateDepartment @p0", department.Name);
+                        // Call stored procedure to insert
+                        await db.Database.ExecuteSqlRawAsync("EXEC CreateDepartment @p0", department.Name);
+                    }
+                    else
+                    {
+                        TempData["error"] = $"Department {department.Name} Is Already Exists!";
+                        return View(department);
+                    }
                 }
                 else
                 {
-                    TempData["success"] = "Department Updated Successfully!";
+                    var DeptExist = unitOfWork.department.GetAll().FirstOrDefault(x => x.Name == department.Name);
+                    if (DeptExist == null)
+                    {
 
-                    // Use your existing EF update logic or a separate stored procedure for update
-                    unitOfWork.department.Update(department);
-                    unitOfWork.Save();
+                        TempData["success"] = "Department Updated Successfully!";
+                        unitOfWork.department.Update(department);
+                        unitOfWork.Save();
+                    }
+                    else
+                    {
+                        TempData["error"] = $"Department {department.Name} Is Already Exists!";
+                        return View(department);
+                    }
                 }
 
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
+                return View(department);
             }
 
             return View(department);
@@ -217,5 +234,30 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         {
             return db.department.Any(e => e.Id == id);
         }
+        #region
+        [HttpGet]
+        public IActionResult GetAllDepartment()
+        {
+            var departmentList = unitOfWork.department.GetAll().ToListAsync();
+            return Json(new { data = departmentList });
+        }
+        [HttpGet]
+        public IActionResult GetAllSearch(string value)
+        {
+            if (value == null)
+            {
+                var department = unitOfWork.department.GetAll();
+                return Json(new { data = department });
+            }
+            else
+            {
+                var department = unitOfWork.department.GetAll().Where(
+                    x => x.Name.Contains(value)
+                    );
+                return Json(new { data = department });
+            }
+
+        }
+        #endregion
     }
 }

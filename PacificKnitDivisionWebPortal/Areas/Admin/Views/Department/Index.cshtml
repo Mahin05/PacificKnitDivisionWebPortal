@@ -6,70 +6,71 @@
 <div class="main-div">
 
     <h1 class="text-center">Department List</h1>
-
-    <p>
-        <a class="btn btn-primary" asp-action="Upsert">Create New</a>
-    </p>
-
-
-
-@*     <!-- Button trigger modal -->
-    <i class="bi bi-file-earmark-excel-fill fs-5" style="cursor:pointer" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
-
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Import Data</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form asp-action="Import" method="post" enctype="multipart/form-data">
-                        <input type="file" name="file" accept=".xlsx,.xls" />
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Import</button>
-                        </div>
-                    </form>
-                </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <p>
+                <a class="btn btn-primary" asp-action="Upsert">Create New</a>
+            </p>
+        </div>
+        <div class="col-lg-6">
+            <div class="float-end">
+                <input id="SearchText" /> <button id="Search" class="btn-primary text-bg-info">Search</button>
             </div>
         </div>
-    </div> *@
+    </div>
+    
 
+    <div id="department-table"></div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                    @*     <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.Id">Edit</a> | *@
-                        @* <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
-                        <a class="btn btn-success" asp-action="Upsert" asp-route-id="@item.Id"><i class="bi bi-pen-fill"></i></a> |
-                        <a href="#" class="btn btn-danger delete-button" data-id="@item.Id"><i class="bi bi-trash-fill"></i></a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
 </div>
 
 
 @section Scripts {
     <script type="text/javascript">
-         $(document).ready(function () {
-            $('.delete-button').click(function (e) {
+                 //first load data=======================================
+             $.ajax({
+                url: '/Admin/Department/GetAllDepartment',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.data) {
+                        console.log(response.data.result);
+                        //Build Tabulator
+                            table = new Tabulator("#department-table", {
+                            height: "800px",
+                            data: response.data.result,
+                            layout: "fitColumns",
+                            placeholder: "No Data Set",
+                            pagination: "local",
+                            paginationSize: 20,
+                            paginationSizeSelector: [3, 6, 8, 10],
+                            movableColumns: true,
+                            paginationCounter: "rows",
+                            columns: [
+                                { title: "Department Name", field: "name", sorter: "string"},
+                                {
+                                    title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
+                                        var id = cell.getRow().getData().id;
+                                        return `<a href='/Admin/Department/Upsert/${id}' class='btn btn-sm btn-success'><i class="bi bi-pen-fill"></i></a> <a class='btn btn-sm btn-danger delete-button' data-id='${id}'><i class="bi bi-trash-fill"></i></a>
+
+                                        `;
+                                    }
+                                }
+                            ],
+                        });
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+
+
+            //delete functionalities==================================
+            $(document).on('click', '.delete-button', function (e) {
                 e.preventDefault();
 
                  var id = $(this).data('id');
@@ -116,6 +117,52 @@
                     }
                 });
             });
+
+
+            $("#Search").on("click", function () {
+            var value = $("#SearchText").val();
+            //console.log(value);
+
+                $.ajax({
+                url: '/Admin/Department/GetAllSearch?value='+value,
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.data) {
+                        console.log(response.data.result);
+                        //Build Tabulator
+                            table = new Tabulator("#department-table", {
+                            height: "800px",
+                            data: response.data,
+                            layout: "fitColumns",
+                            placeholder: "No Data Set",
+                            pagination: "local",
+                            paginationSize: 20,
+                            paginationSizeSelector: [3, 6, 8, 10],
+                            movableColumns: true,
+                            paginationCounter: "rows",
+                            columns: [
+                                { title: "Department Name", field: "name", sorter: "string"},
+                                {
+                                    title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
+                                        var id = cell.getRow().getData().id;
+                                        return `<a href='/Admin/Department/Upsert/${id}' class='btn btn-sm btn-success'><i class="bi bi-pen-fill"></i></a> <a class='btn btn-sm btn-danger delete-button' data-id='${id}'><i class="bi bi-trash-fill"></i></a>
+
+                                        `;
+                                    }
+                                }
+                            ],
+                        });
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
         });
+
     </script>
 }

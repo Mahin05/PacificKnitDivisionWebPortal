@@ -116,11 +116,21 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                 }
                 else
                 {
-                    TempData["success"] = "IP Phone Details Updated Successfully!";
-                    unitOfWork.iPPhoneDetails.Update(model);
+                    var IPno = unitOfWork.iPPhoneDetails.GetAll().FirstOrDefault(x => x.IPNo == model.IPNo);
+                    if (IPno == null)
+                    {
+                        TempData["success"] = "IP Phone Details Updated Successfully!";
+                        unitOfWork.iPPhoneDetails.Update(model);
+                    }
+                    else
+                    {
+                        TempData["error"] = $"IP Phone No {model.IPNo} already exists!";
+                    }
+                   
                 }
                 unitOfWork.Save();
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
+                return View(model);
             }
             return View(model);
         }
@@ -285,18 +295,41 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllSearch(string value)
+        public IActionResult GetAllSearch(string value,int Dept,string Unit)
         {
-            if (value == null)
+            if (value == null && Dept==0 && Unit== "All Unit")
             {
                 var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department);
+                return Json(new { data = products });
+            }
+            if (value == null && Dept != 0 && Unit != "All Unit")
+            {
+                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.DeptId==Dept && x.Unit==Unit);
+                return Json(new { data = products });
+            }
+            if (value == null && Dept != 0 && Unit == "All Unit")
+            {
+                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.DeptId==Dept);
+                return Json(new { data = products });
+            }
+            if (value == null && Dept == 0 && Unit != "All Unit")
+            {
+                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.Unit==Unit);
+                return Json(new { data = products });
+            }
+            if (value != null && Dept != 0 && Unit != "All Unit")
+            {
+                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.Unit==Unit && x.DeptId==Dept && (x.DisplayName.Contains(value) ||
+                    x.IPNo.Contains(value) ||
+                    x.Department.Name.Contains(value)));
                 return Json(new { data = products });
             }
             else
             {
                 var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(
                     x => x.DisplayName.Contains(value) ||
-                    x.IPNo.Contains(value)
+                    x.IPNo.Contains(value) ||
+                    x.Department.Name.Contains(value)
                     );
                 return Json(new { data = products });
             }
