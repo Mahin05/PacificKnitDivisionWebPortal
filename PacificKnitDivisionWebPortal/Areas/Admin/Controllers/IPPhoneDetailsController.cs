@@ -103,8 +103,16 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
             {
                 if (model.Id == null || model.Id == 0)
                 {
-                    TempData["success"] = "IP Phone Details Created Successfully!";
-                    unitOfWork.iPPhoneDetails.Add(model);
+                    var IPno = unitOfWork.iPPhoneDetails.GetAll().FirstOrDefault(x => x.IPNo == model.IPNo);
+                    if(IPno== null)
+                    {
+                        TempData["success"] = "IP Phone Details Created Successfully!";
+                        unitOfWork.iPPhoneDetails.Add(model);
+                    }
+                    else
+                    {
+                        TempData["error"] = $"IP Phone No {model.IPNo} already exists!";
+                    }
                 }
                 else
                 {
