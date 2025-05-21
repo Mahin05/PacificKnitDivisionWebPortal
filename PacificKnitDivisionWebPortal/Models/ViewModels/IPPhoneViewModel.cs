@@ -6,6 +6,7 @@
         public string IPNo { get; set; }
         public string DisplayName { get; set; }
         public string Unit { get; set; }
+        public string displayno { get; set; }
     }
 
 }

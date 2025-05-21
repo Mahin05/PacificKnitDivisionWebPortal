@@ -13,14 +13,21 @@ namespace PacificKnitDivisionWebPortal.Data
         public DbSet<DocumentModel> documents { get; set; }
         public DbSet<Department> department { get; set; }
         public DbSet<IPPhoneDetails> ipphoneDetails { get; set; }
-        public DbSet<IPPhoneViewModel> IPPhoneListVM { get; set; }
+        public DbSet<Unit> unit { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder); // ✅ Don't forget this if using Identity
 
-            modelBuilder.Entity<IPPhoneViewModel>().HasNoKey(); // ✅ Only this
-        }
+
+
+        //public DbSet<IPPhoneDisplayOrder> IPPhoneDisplayOrder { get; set; }
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Ignore<IPPhoneViewModel>();
+
+        //    base.OnModelCreating(modelBuilder); // ✅ Don't forget this if using Identity
+
+        //    modelBuilder.Entity<IPPhoneViewModel>().HasNoKey(); // ✅ Only this
+        //}
 
 
     }

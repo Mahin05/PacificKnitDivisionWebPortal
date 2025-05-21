@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PacificKnitDivisionWebPortal.Data;
 
@@ -11,9 +12,11 @@ using PacificKnitDivisionWebPortal.Data;
 namespace PacificKnitDivisionWebPortal.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250521081455_UnitDisplayNoAddedInDepartmentTable")]
+    partial class UnitDisplayNoAddedInDepartmentTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -228,8 +231,9 @@ namespace PacificKnitDivisionWebPortal.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DisplayNo")
-                        .HasColumnType("int");
+                    b.Property<string>("DisplayNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -305,7 +309,7 @@ namespace PacificKnitDivisionWebPortal.Migrations
                     b.ToTable("ipphoneDetails");
                 });
 
-            modelBuilder.Entity("PacificKnitDivisionWebPortal.Models.Unit", b =>
+            modelBuilder.Entity("PacificKnitDivisionWebPortal.Models.IPPhoneDisplayOrder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -313,13 +317,20 @@ namespace PacificKnitDivisionWebPortal.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<int>("DeptId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DisplayNo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Unit")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("unit");
+                    b.HasIndex("DeptId");
+
+                    b.ToTable("IPPhoneDisplayOrder");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -374,6 +385,17 @@ namespace PacificKnitDivisionWebPortal.Migrations
                 });
 
             modelBuilder.Entity("PacificKnitDivisionWebPortal.Models.IPPhoneDetails", b =>
+                {
+                    b.HasOne("PacificKnitDivisionWebPortal.Models.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DeptId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("PacificKnitDivisionWebPortal.Models.IPPhoneDisplayOrder", b =>
                 {
                     b.HasOne("PacificKnitDivisionWebPortal.Models.Department", "Department")
                         .WithMany()

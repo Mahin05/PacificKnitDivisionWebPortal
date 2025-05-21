@@ -33,6 +33,7 @@
             <th style="background-color:#ffb938">IP No.</th>
             <th style="background-color:#ffb938">Display Name</th>
             <th style="background-color:#ffb938;width:100px;">Unit</th>
+            <th style="background-color:#ffb938;width:100px;">Display Order</th>
         </tr>
         <tbody id="PKL-BOD">
         </tbody>
@@ -56,6 +57,7 @@
             <th style="background-color:#ffb938">IP No.</th>
             <th style="background-color:#ffb938">Display Name</th>
             <th style="background-color:#ffb938;width:100px;">Unit</th>
+            <th style="background-color:#ffb938;width:100px;">Display Order</th>
         </tr>
         <tbody id="PCL1-BOD">
         </tbody>
@@ -79,6 +81,7 @@
             <th style="background-color:#ffb938">IP No.</th>
             <th style="background-color:#ffb938">Display Name</th>
             <th style="background-color:#ffb938;width:100px;">Unit</th>
+            <th style="background-color:#ffb938;width:100px;">Display Order</th>
         </tr>
         <tbody id="PCL2-RestData">
         </tbody>
@@ -103,45 +106,47 @@
                       console.log(response);
                       //========================== pkl part starts================================
                       var dataArrayPKL = response.table1;
-                        let bodDataPKL = dataArrayPKL.filter(item => item.name === "BoD");
-                        let PKLBOD = document.getElementById("PKL-BOD");
-                        bodDataPKL.forEach((data, index) => {
-                            let tr;
-                            if (index === 0) {
-                            // First row with rowspan and name
-                            tr = `
-                                <tr>
-                                <td rowspan="${bodDataPKL.length}" class="text-center fw-bold">${data.name}</td>
-                                <td class="text-center fw-bold">${data.ipNo}</td>
-                                <td>${data.displayName}</td>
-                                <td class="text-center">${data.unit}</td>
-                                </tr>
-                            `;
-                            } else {
-                            // Other rows without name
-                            tr = `
-                                <tr>
-                                <td class="text-center fw-bold">${data.ipNo}</td>
-                                <td>${data.displayName}</td>
-                                <td class="text-center">${data.unit}</td>
-                                </tr>
-                            `;
-                            }
+                        // let bodDataPKL = dataArrayPKL.filter(item => item.name === "BoD");
+                        // let PKLBOD = document.getElementById("PKL-BOD");
+                        // bodDataPKL.forEach((data, index) => {
+                        //     let tr;
+                        //     if (index === 0) {
+                        //     // First row with rowspan and name
+                        //     tr = `
+                        //         <tr>
+                        //         <td rowspan="${bodDataPKL.length}" class="text-center fw-bold">${data.name}</td>
+                        //         <td class="text-center fw-bold">${data.ipNo}</td>
+                        //         <td>${data.displayName}</td>
+                        //         <td class="text-center">${data.unit}</td>
+                        //         <td class="text-center">${data.displayno}</td>
+                        //         </tr>
+                        //     `;
+                        //     } else {
+                        //     // Other rows without name
+                        //     tr = `
+                        //         <tr>
+                        //         <td class="text-center fw-bold">${data.ipNo}</td>
+                        //         <td>${data.displayName}</td>
+                        //         <td class="text-center">${data.unit}</td>
+                        //         <td class="text-center">${data.displayno}</td>
+                        //         </tr>
+                        //     `;
+                        //     }
 
-                            PKLBOD.insertAdjacentHTML('beforeend', tr);
-                        });
+                        //     PKLBOD.insertAdjacentHTML('beforeend', tr);
+                        // });
 
 
 
 
                         let groupedDataPKL = {}; // Group by name (e.g., HR, ICT)
                             dataArrayPKL.forEach(item => {
-                                if (item.name !== "BoD") {
+                                // if (item.name !== "BoD") {
                                 if (!groupedDataPKL[item.name]) {
                                     groupedDataPKL[item.name] = [];
                                 }
                                 groupedDataPKL[item.name].push(item);
-                                }
+                                // }
                             });
 
                             let restTbodypkl = document.getElementById("PKL-RestData");
@@ -159,6 +164,7 @@
                                     <td class="text-center fw-bold">${item.ipNo}</td>
                                     <td>${item.displayName}</td>
                                     <td class="text-center">${item.unit}</td>
+                                    <td class="text-center">${item.displayno}</td>
                                     `;
                                 } else {
                                     // Next rows do not repeat the name
@@ -166,6 +172,7 @@
                                     <td class="text-center fw-bold">${item.ipNo}</td>
                                     <td>${item.displayName}</td>
                                     <td class="text-center">${item.unit}</td>
+                                    <td class="text-center">${item.displayno}</td>
                                     `;
                                 }
 
@@ -194,6 +201,7 @@
                                 <td class="text-center fw-bold">${data.ipNo}</td>
                                 <td>${data.displayName}</td>
                                 <td class="text-center">${data.unit}</td>
+                                <td class="text-center">${data.displayno}</td>
                                 </tr>
                             `;
                             } else {
@@ -203,6 +211,7 @@
                                 <td class="text-center fw-bold">${data.ipNo}</td>
                                 <td>${data.displayName}</td>
                                 <td class="text-center">${data.unit}</td>
+                                <td class="text-center">${data.displayno}</td>
                                 </tr>
                             `;
                             }
@@ -238,6 +247,7 @@
                                     <td class="text-center fw-bold">${item.ipNo}</td>
                                     <td>${item.displayName}</td>
                                     <td class="text-center">${item.unit}</td>
+                                    <td class="text-center">${item.displayno}</td>
                                     `;
                                 } else {
                                     // Next rows do not repeat the name
@@ -245,6 +255,7 @@
                                     <td class="text-center fw-bold">${item.ipNo}</td>
                                     <td>${item.displayName}</td>
                                     <td class="text-center">${item.unit}</td>
+                                    <td class="text-center">${item.displayno}</td>
                                     `;
                                 }
 
@@ -276,6 +287,7 @@
                                 <td class="text-center fw-bold">${data.ipNo}</td>
                                 <td>${data.displayName}</td>
                                 <td class="text-center">${data.unit}</td>
+                                <td class="text-center">${data.displayno}</td>
                                 </tr>
                             `;
                             } else {
@@ -285,6 +297,7 @@
                                 <td class="text-center fw-bold">${data.ipNo}</td>
                                 <td>${data.displayName}</td>
                                 <td class="text-center">${data.unit}</td>
+                                <td class="text-center">${data.displayno}</td>
                                 </tr>
                             `;
                             }
@@ -320,6 +333,7 @@
                                     <td class="text-center fw-bold">${item.ipNo}</td>
                                     <td>${item.displayName}</td>
                                     <td class="text-center">${item.unit}</td>
+                                    <td class="text-center">${item.displayno}</td>
                                     `;
                                 } else {
                                     // Next rows do not repeat the name
@@ -327,6 +341,7 @@
                                     <td class="text-center fw-bold">${item.ipNo}</td>
                                     <td>${item.displayName}</td>
                                     <td class="text-center">${item.unit}</td>
+                                    <td class="text-center">${item.displayno}</td>
                                     `;
                                 }
 

@@ -79,13 +79,13 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
             {
                 if (department.Id == null || department.Id == 0)
                 {
-                    var DeptExist = unitOfWork.department.GetAll().FirstOrDefault(x => x.Name == department.Name);
+                    var DeptExist = unitOfWork.department.GetAll().FirstOrDefault(x => x.Name == department.Name && x.Unit==department.Unit);
                     if (DeptExist == null)
                     {
                         TempData["success"] = "Department Created Successfully!";
 
                         // Call stored procedure to insert
-                        await db.Database.ExecuteSqlRawAsync("EXEC CreateDepartment @p0", department.Name);
+                        await db.Database.ExecuteSqlRawAsync("EXEC CreateDepartment @p0,@p1,@p2", department.Name,department.Unit,department.DisplayNo);
                     }
                     else
                     {
@@ -95,7 +95,7 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                 }
                 else
                 {
-                    var DeptExist = unitOfWork.department.GetAll().FirstOrDefault(x => x.Name == department.Name);
+                    var DeptExist = unitOfWork.department.GetAll().FirstOrDefault(x => x.Name == department.Name && x.Unit == department.Unit);
                     if (DeptExist == null)
                     {
 
@@ -238,22 +238,54 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAllDepartment()
         {
-            var departmentList = unitOfWork.department.GetAll().ToListAsync();
+            var departmentList = unitOfWork.department.GetAll().OrderBy(x=>x.DisplayNo).ThenBy(x=>x.Unit).ToListAsync();
             return Json(new { data = departmentList });
         }
         [HttpGet]
-        public IActionResult GetAllSearch(string value)
+        public IActionResult GetDisplayNo(string Unit)
         {
-            if (value == null)
+            var displayOrders = unitOfWork.department.GetAll().Where(x => x.Unit == Unit).Select(x => x.DisplayNo).ToList();
+            if (!displayOrders.Any())
             {
-                var department = unitOfWork.department.GetAll();
+                return Ok(new { data = 0 });
+            }
+
+            var displayOrder = displayOrders.Max();
+
+            if (displayOrder == 0)
+            {
+                return Ok(new { data = 0 });
+            }
+            else
+            {
+                return Json(new { data = displayOrder });
+            }
+
+                
+        }
+        [HttpGet]
+        public IActionResult GetAllSearch(string value, string unit)
+        {
+            if (value == null && unit==null)
+            {
+                var department = unitOfWork.department.GetAll().ToListAsync();
+                return Json(new { data = department });
+            }
+            if(value != null && unit != null)
+            {
+                var department = unitOfWork.department.GetAll().Where(x=>x.Unit==unit && x.Name.Contains(value)).ToListAsync();
+                return Json(new { data = department });
+            }
+            if(value == null && unit != null)
+            {
+                var department = unitOfWork.department.GetAll().Where(x=>x.Unit==unit).ToListAsync();
                 return Json(new { data = department });
             }
             else
             {
                 var department = unitOfWork.department.GetAll().Where(
                     x => x.Name.Contains(value)
-                    );
+                    ).ToListAsync();
                 return Json(new { data = department });
             }
 

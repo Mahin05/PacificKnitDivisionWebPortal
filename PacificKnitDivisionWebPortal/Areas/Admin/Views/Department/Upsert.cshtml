@@ -24,6 +24,21 @@
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="form-group fw-bold mb-2">
+                    <label asp-for="Unit" class="control-label"></label>
+                    <select asp-for="Unit" id="Unit">
+                        <option selected disabled>--Select Unit--</option>
+                        <option value="PKL">PKL</option>
+                        <option value="PCL1">PCL1</option>
+                        <option value="PCL2">PCL2</option>
+                    </select>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group fw-bold mb-2">
+                    <label asp-for="DisplayNo" class="control-label"></label>
+                    <input asp-for="DisplayNo" class="form-control" id="DisplayNo"  />
+                    <span asp-validation-for="DisplayNo" class="text-danger"></span>
+                </div>
+                <div class="form-group fw-bold mb-2">
                     @if (Model.Id != 0)
                     {
                         <button type="submit" value="Create" class="btn btn-success">Update</button>
@@ -44,4 +59,38 @@
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+    <script type="text/javascript">
+                    var Unit = $("#Unit").on("change",function(){
+                    var value = $(this).val();
+                    // alert(value);
+                    $.ajax({
+                        url: '/Admin/Department/GetDisplayNo',
+                    method: 'GET',
+                        dataType: 'json',
+                            data: { Unit: value },
+                        success: function (response) {
+                            if (response.data) {
+                                //console.log(response.data);
+                                   $("#DisplayNo").val(response.data+1);
+
+
+                    }
+                    else {
+                            console.log("No data found.");
+                            $("#DisplayNo").val(1);
+                    }
+            },
+            error: function (xhr, status, error) {
+                console.error("An error occurred: " + error);
+            }
+        });
+
+    });
+
+
+
+
+    </script>
 }

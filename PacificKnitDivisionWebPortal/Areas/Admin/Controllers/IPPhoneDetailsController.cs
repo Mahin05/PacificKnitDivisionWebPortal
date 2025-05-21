@@ -317,6 +317,20 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                 var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.Unit==Unit);
                 return Json(new { data = products });
             }
+            if (value != null && Dept != 0 && Unit == "All Unit")
+            {
+                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.DeptId==Dept && (x.DisplayName.Contains(value) ||
+                    x.IPNo.Contains(value) ||
+                    x.Department.Name.Contains(value)));
+                return Json(new { data = products });
+            }
+            if (value != null && Dept == 0 && Unit != "All Unit")
+            {
+                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.Unit==Unit && (x.DisplayName.Contains(value) ||
+                    x.IPNo.Contains(value) ||
+                    x.Department.Name.Contains(value)));
+                return Json(new { data = products });
+            }
             if (value != null && Dept != 0 && Unit != "All Unit")
             {
                 var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.Unit==Unit && x.DeptId==Dept && (x.DisplayName.Contains(value) ||

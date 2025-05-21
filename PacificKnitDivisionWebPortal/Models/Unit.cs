@@ -2,13 +2,11 @@
 
 namespace PacificKnitDivisionWebPortal.Models
 {
-    public class Department
+    public class Unit
     {
         [Key]
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
-        public string Unit { get; set; }
-        public int DisplayNo { get; set; }
     }
 }
