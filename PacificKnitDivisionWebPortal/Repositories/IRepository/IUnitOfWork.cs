@@ -8,6 +8,7 @@ namespace OnlineBookOrderManagementSystem.Repositories.IRepository
         IDocumentRepository Document { get; }
         IDepartmentRepository department { get; }
         IIPPhoneDetailsRepository iPPhoneDetails { get; }
+        IUnitRepository unit { get; }
         void Save();
     }
 }

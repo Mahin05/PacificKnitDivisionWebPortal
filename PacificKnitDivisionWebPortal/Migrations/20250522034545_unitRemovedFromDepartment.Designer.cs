@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PacificKnitDivisionWebPortal.Data;
 
@@ -11,9 +12,11 @@ using PacificKnitDivisionWebPortal.Data;
 namespace PacificKnitDivisionWebPortal.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250522034545_unitRemovedFromDepartment")]
+    partial class unitRemovedFromDepartment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,12 +238,7 @@ namespace PacificKnitDivisionWebPortal.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UnitId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UnitId");
 
                     b.ToTable("department");
                 });
@@ -295,14 +293,13 @@ namespace PacificKnitDivisionWebPortal.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UnitId")
-                        .HasColumnType("int");
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DeptId");
-
-                    b.HasIndex("UnitId");
 
                     b.ToTable("ipphoneDetails");
                 });
@@ -375,17 +372,6 @@ namespace PacificKnitDivisionWebPortal.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PacificKnitDivisionWebPortal.Models.Department", b =>
-                {
-                    b.HasOne("PacificKnitDivisionWebPortal.Models.Unit", "Unit")
-                        .WithMany()
-                        .HasForeignKey("UnitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Unit");
-                });
-
             modelBuilder.Entity("PacificKnitDivisionWebPortal.Models.IPPhoneDetails", b =>
                 {
                     b.HasOne("PacificKnitDivisionWebPortal.Models.Department", "Department")
@@ -394,15 +380,7 @@ namespace PacificKnitDivisionWebPortal.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PacificKnitDivisionWebPortal.Models.Unit", "Unit")
-                        .WithMany()
-                        .HasForeignKey("UnitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Department");
-
-                    b.Navigation("Unit");
                 });
 #pragma warning restore 612, 618
         }

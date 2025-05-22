@@ -9,6 +9,7 @@
     <div class="row d-flex justify-content-center align-content-center">
         <div class="col-md-4">
             <form asp-action="Upsert">
+                <input asp-for="Id" hidden />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group fw-bold mb-2">
                     <label asp-for="IPNo" class="control-label"></label>
@@ -21,18 +22,15 @@
                     <span asp-validation-for="DisplayName" class="text-danger"></span>
                 </div>
                 <div class="form-group fw-bold mb-2">
-                    <label asp-for="Unit" class="control-label"></label>
-                    <select asp-for="Unit" class="form-control">
-                        <option disabled selected>--Select Unit--</option>
-                        <option value="PKL">PKL</option>
-                        <option value="PCL1">PCL1</option>
-                        <option value="PCL2">PCL2</option>
+                    <label asp-for="UnitId" class="control-label"></label><br />
+                    <select asp-for="UnitId" asp-items="ViewBag.UnitList" id="Unit">
+                        <option selected disabled>--Select Unit--</option>
                     </select>
                     <span asp-validation-for="Unit" class="text-danger"></span>
                 </div>
                 <div class="form-group fw-bold mb-2">
                     <label asp-for="DeptId" class="control-label"></label>
-                    <select asp-for="DeptId" class="form-control" asp-items="ViewBag.DepartmentList">
+                    <select asp-for="DeptId" class="form-control" asp-items="ViewBag.DepartmentList" id="Dept">
                         <option disabled selected>--Select Category--</option>
                     </select>
                 </div>
@@ -59,4 +57,42 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+                    $("#Unit").on("change", function () {
+            var value = $(this).val();
+
+            $.ajax({
+                url: '/Admin/IPPhoneDetails/GetDepartmentByUnit',
+                method: 'GET',
+                dataType: 'json',
+                data: { UnitId: value },
+                success: function (response) {
+                    console.log("response", response);
+
+                    var $dept = $('#Dept');
+                    $dept.empty();
+                    $dept.append($('<option>', {
+                        value: '',
+                        text: '-- Select Department --'
+                    }));
+
+                    if (response.data && response.data.length > 0) {
+                        $.each(response.data, function (i, dept) {
+                            $dept.append($('<option>', {
+                                value: dept.id,
+                                text: dept.name
+                            }));
+                        });
+                    } else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        });
+
+    </script>
 }

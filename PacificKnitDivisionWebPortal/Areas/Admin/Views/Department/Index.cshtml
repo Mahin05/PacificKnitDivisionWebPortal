@@ -16,9 +16,6 @@
             <div class="float-end">
                 <select id="unit">
                     <option value="0">All Unit</option>
-                    <option value="1">PKL</option>
-                    <option value="1">PCL1</option>
-                    <option value="1">PCL2</option>
                 </select>
                 <input id="SearchText" /> <button id="Search" class="btn-primary text-bg-info">Search</button>
             </div>
@@ -39,12 +36,21 @@
                 method: 'GET',
                 dataType: 'json',
                 success: function (response) {
+                    console.log("response",response.data);
+                    if(response.unit){
+                        $.each(response.unit, function (i, unit) {
+                            $('#unit').append($('<option>', {
+                                value: unit.id,
+                                text: unit.name
+                            }));
+                        });
+                    }
                     if (response.data) {
                         //console.log(response.data.result);
                         //Build Tabulator
                             table = new Tabulator("#department-table", {
                             height: "800px",
-                            data: response.data.result,
+                            data: response.data,
                             layout: "fitColumns",
                             placeholder: "No Data Set",
                             pagination: "local",
@@ -54,7 +60,7 @@
                             paginationCounter: "rows",
                             columns: [
                                 { title: "Department Name", field: "name", sorter: "string"},
-                                { title: "Unit", field: "unit", sorter: "string"},
+                                { title: "Unit", field: "unit.name", sorter: "string"},
                                 { title: "Display No", field: "displayNo", sorter: "string"},
                                 {
                                     title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
@@ -129,9 +135,9 @@
 
             $("#Search").on("click", function () {
             var value = $("#SearchText").val();
-            alert("asas");
+            //alert("asas");
             //console.log(value);
-            var Unit = $("#unit option:selected").text();
+            var Unit = $("#unit option:selected").val();
                 $.ajax({
                 url: '/Admin/Department/GetAllSearch?value='+value+'&unit='+Unit,
                 method: 'GET',
@@ -152,7 +158,7 @@
                             paginationCounter: "rows",
                             columns: [
                                 { title: "Department Name", field: "name", sorter: "string"},
-                                { title: "Unit", field: "unit", sorter: "string"},
+                                { title: "Unit", field: "unit.name", sorter: "string"},
                                 { title: "Display No", field: "displayNo", sorter: "string"},
                                 {
                                     title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
@@ -180,10 +186,10 @@
                input.addEventListener("keypress", function(event) {
                    if (event.key === "Enter")
                    {
-                       alert("sas");
+                       //alert("sas");
                        var value = $("#SearchText").val();
             //console.log(value);
-            var Unit = $("#unit option:selected").text();
+            var Unit = $("#unit option:selected").val();
                 $.ajax({
                 url: '/Admin/Department/GetAllSearch?value='+value+'&unit='+Unit,
                 method: 'GET',
@@ -204,7 +210,7 @@
                             paginationCounter: "rows",
                             columns: [
                                 { title: "Department Name", field: "name", sorter: "string"},
-                                { title: "Unit", field: "unit", sorter: "string"},
+                                { title: "Unit", field: "unit.name", sorter: "string"},
                                 { title: "Display No", field: "displayNo", sorter: "string"},
                                 {
                                     title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
@@ -228,5 +234,6 @@
                    }
                 
         });
-    </script>
+             
+</script>
 }

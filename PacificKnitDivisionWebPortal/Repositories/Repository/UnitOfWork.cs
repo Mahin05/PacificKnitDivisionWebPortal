@@ -10,6 +10,7 @@ namespace OnlineBookOrderManagementSystem.Repositories.Repository
         public IDocumentRepository Document { get; private set; }
         public IDepartmentRepository department { get; private set; }
         public IIPPhoneDetailsRepository iPPhoneDetails { get; private set; }
+        public IUnitRepository unit { get; private set; }
 
         public UnitOfWork(ApplicationDBContext db)
         {
@@ -18,6 +19,7 @@ namespace OnlineBookOrderManagementSystem.Repositories.Repository
             Document= new DocumentRepository(_db);
             department= new DepartmentRepository(_db);
             iPPhoneDetails = new IPPhoneDetailsRepository(_db);
+            unit = new UnitRepository(_db);
         }
 
         //public async Task Save()

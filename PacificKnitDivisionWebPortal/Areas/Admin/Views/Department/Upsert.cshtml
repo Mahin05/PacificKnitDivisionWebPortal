@@ -24,14 +24,32 @@
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="form-group fw-bold mb-2">
-                    <label asp-for="Unit" class="control-label"></label>
-                    <select asp-for="Unit" id="Unit">
+                    <label asp-for="UnitId" class="control-label"></label> <br />
+                    <select asp-for="UnitId" asp-items="ViewBag.UnitList" id="Unit">
                         <option selected disabled>--Select Unit--</option>
-                        <option value="PKL">PKL</option>
-                        <option value="PCL1">PCL1</option>
-                        <option value="PCL2">PCL2</option>
                     </select>
-                    <span asp-validation-for="Name" class="text-danger"></span>
+                    <span asp-validation-for="UnitId" class="text-danger"></span>
+                </div>
+                <div class="form-group fw-bold mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" value="0" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                        <label class="form-check-label" for="flexRadioDefault1">
+                            Show Before
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" value="1" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+                        <label class="form-check-label" for="flexRadioDefault2">
+                            Show After
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group fw-bold mb-2">
+                    <label class="control-label">Department</label> <br />
+                    <select id="Dept">
+                        <option selected disabled>--Select Department--</option>
+                    </select>
+                    <span class="text-danger"></span>
                 </div>
                 <div class="form-group fw-bold mb-2">
                     <label asp-for="DisplayNo" class="control-label"></label>
@@ -41,12 +59,12 @@
                 <div class="form-group fw-bold mb-2">
                     @if (Model.Id != 0)
                     {
-                        <button type="submit" value="Create" class="btn btn-success">Update</button>
+                        <button id="btn-submit" type="submit" value="Create" class="btn btn-success">Update</button>
                     }
                     else
                     {
 
-                        <button type="submit" value="Create" class="btn btn-primary">Create</button>
+                        <button id="btn-submit" type="submit" value="Create" class="btn btn-primary">Create</button>
                     }
                 </div>
             </form>
@@ -59,21 +77,86 @@
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-
     <script type="text/javascript">
-                    var Unit = $("#Unit").on("change",function(){
+        var ShowFlag;
+                $("#flexRadioDefault1")
+        .change(function(){
+            if( $(this).is(":checked") )
+            {
+                var val = $(this).val();
+                    ShowFlag=val;
+            }
+        });
+                $("#flexRadioDefault2")
+        .change(function(){
+            if( $(this).is(":checked") )
+            {
+                    var val = $(this).val();
+                        ShowFlag=val;
+            }
+        });
+
+
+                            //alert(ShowFlag);
+
+
+
+
+
+                $("#Unit").on("change", function () {
+                var value = $(this).val();
+
+                $.ajax({
+                    url: '/Admin/IPPhoneDetails/GetDepartmentByUnit',
+                    method: 'GET',
+                    dataType: 'json',
+                    data: { UnitId: value },
+                    success: function (response) {
+                        //console.log("response", response);
+
+                        var $dept = $('#Dept');
+                        $dept.empty();
+                        $dept.append($('<option>', {
+                            value: '',
+                            text: '-- Select Department --'
+                        }));
+
+                        if (response.data && response.data.length > 0) {
+                            $.each(response.data, function (i, dept) {
+                                $dept.append($('<option>', {
+                                    value: dept.id,
+                                    text: dept.name
+                                }));
+                            });
+                        } else {
+                            console.log("No data found.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred: " + error);
+                    }
+                });
+            });
+
+                    var Unit = $("#Dept").on("change",function(){
                     var value = $(this).val();
                     // alert(value);
                     $.ajax({
                         url: '/Admin/Department/GetDisplayNo',
                     method: 'GET',
                         dataType: 'json',
-                            data: { Unit: value },
+                                        data: { Id: value},
                         success: function (response) {
                             if (response.data) {
                                 //console.log(response.data);
-                                   $("#DisplayNo").val(response.data+1);
+                                    if(ShowFlag==0){
+
+                                       $("#DisplayNo").val(response.data-1);
+                                    }
+                                    else if(ShowFlag==1){
+
+                                       $("#DisplayNo").val(response.data+1);
+                                    }
 
 
                     }
@@ -86,11 +169,49 @@
                 console.error("An error occurred: " + error);
             }
         });
-
     });
 
 
+     // function myFunction(){
+     //    $("#btn-submit").on("click",function(){
+     //                        event.preventDefault();
+     //                    alert("asas");
+     //                //==================== Update selected department display order
+     //                var DisplayNo;
+     //                var previousDisplayNo = parseInt($("#DisplayNo").val());
 
+     //                if (ShowFlag == 0) {
+     //                    DisplayNo = previousDisplayNo + 1;
+     //                } else if (ShowFlag == 1) {
+     //                    DisplayNo = previousDisplayNo - 1;
+     //                }
 
+     //                $.ajax({
+     //                    url: '/Admin/Department/UpdateSelectedDeptDOrder',
+     //                    method: 'POST',
+     //                    dataType: 'json',
+     //                    data: {
+     //                        DeptId: value,
+     //                        DisplayNo: DisplayNo
+     //                    },
+     //                    success: function (response) {
+     //                        if (response.data) {
+     //                            // Optionally update DisplayNo field if needed:
+     //                            // $("#DisplayNo").val(response.data);
+     //                        } else {
+     //                            console.log("No data found.");
+     //                            $("#DisplayNo").val(1);
+     //                        }
+     //                    },
+     //                    error: function (xhr, status, error) {
+     //                        console.error("An error occurred: " + error);
+     //                    }
+     //                });
+
+     //                });
+     // };
+    // $(document).ready(function(){
+            
+    // });
     </script>
 }

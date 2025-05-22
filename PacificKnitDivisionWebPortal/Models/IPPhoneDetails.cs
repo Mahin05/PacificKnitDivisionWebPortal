@@ -13,12 +13,16 @@ namespace PacificKnitDivisionWebPortal.Models
         [Required]
         [Display(Name = "Display Name")]
         public string DisplayName { get; set; }
-        [Required]
-        public string Unit { get; set; }
 
         [ForeignKey("Department")]
         [Display(Name = "Department")]
         public int DeptId { get; set; }
         public Department? Department { get; set; }
+
+
+        [ForeignKey("Unit")]
+        [Display(Name = "Unit")]
+        public int UnitId { get; set; }
+        public Unit? Unit { get; set; }
     }
 }

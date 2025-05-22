@@ -68,13 +68,25 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         public async Task<IActionResult> Upsert(int? Id)
         {
             // Initialize the Category List for the dropdown
-            IEnumerable<SelectListItem> DepartmentList = (unitOfWork.department.GetAll())
-                .Select(x => new SelectListItem
-                {
-                    Text = x.Name,
-                    Value = x.Id.ToString()
-                });
-            ViewBag.DepartmentList = DepartmentList;
+            //IEnumerable<SelectListItem> DepartmentList = (unitOfWork.department.GetAll())
+            //    .Select(x => new SelectListItem
+            //    {
+            //        Text = x.Name,
+            //        Value = x.Id.ToString()
+            //    });
+            //ViewBag.DepartmentList = DepartmentList;
+
+
+
+            IEnumerable<SelectListItem> UnitList = (unitOfWork.unit.GetAll())
+           .Select(x => new SelectListItem
+           {
+               Text = x.Name,
+               Value = x.Id.ToString()
+           });
+            ViewBag.UnitList = UnitList;
+
+
 
             // Check if this is an Insert or Update operation
             if (Id == null)
@@ -101,6 +113,24 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                //IEnumerable<SelectListItem> DepartmentList = (unitOfWork.department.GetAll())
+                //    .Select(x => new SelectListItem
+                //    {
+                //        Text = x.Name,
+                //        Value = x.Id.ToString()
+                //    });
+                //ViewBag.DepartmentList = DepartmentList;
+
+
+
+                IEnumerable<SelectListItem> UnitList = (unitOfWork.unit.GetAll())
+               .Select(x => new SelectListItem
+               {
+                   Text = x.Name,
+                   Value = x.Id.ToString()
+               });
+                ViewBag.UnitList = UnitList;
+
                 if (model.Id == null || model.Id == 0)
                 {
                     var IPno = unitOfWork.iPPhoneDetails.GetAll().FirstOrDefault(x => x.IPNo == model.IPNo);
@@ -130,7 +160,7 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                 }
                 unitOfWork.Save();
                 //return RedirectToAction(nameof(Index));
-                return View(model);
+                return RedirectToAction(nameof(Upsert));
             }
             return View(model);
         }
@@ -256,11 +286,12 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
 
         #region API
         [HttpGet]
-        public IActionResult GetAllIPPhoneDetails()
+        public async Task<IActionResult> GetAllIPPhoneDetails()
         {
-            var iPPhoneDetails = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department);
+            var iPPhoneDetails = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit);
             var department = unitOfWork.department.GetAll();
-            return Json(new { data = iPPhoneDetails,dept = department });
+            var unitList = await unitOfWork.unit.GetAll().ToListAsync();
+            return Json(new { data = iPPhoneDetails,dept = department,unit= unitList });
         }
         [HttpGet]
         public IActionResult GetIPDetailsByDepartment(int value)
@@ -278,9 +309,9 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                 
         }
         [HttpGet]
-        public IActionResult GetIPDetailsByUnit(string value)
+        public IActionResult GetIPDetailsByUnit(int value)
         {
-            if(value=="All Unit")
+            if(value==0)
             {
 
                 var iPPhoneDetails = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department);
@@ -288,52 +319,52 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
             }
             else
             {
-                var iPPhoneDetails = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x => x.Unit == value);
+                var iPPhoneDetails = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x => x.UnitId == value);
                 return Json(new { data = iPPhoneDetails });
             }
                 
         }
 
         [HttpGet]
-        public IActionResult GetAllSearch(string value,int Dept,string Unit)
+        public IActionResult GetAllSearch(string value,int Dept,int Unit)
         {
-            if (value == null && Dept==0 && Unit== "All Unit")
+            if (value == null && Dept==0 && Unit== 0)
             {
                 var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department);
                 return Json(new { data = products });
             }
-            if (value == null && Dept != 0 && Unit != "All Unit")
+            if (value == null && Dept != 0 && Unit != 0)
             {
-                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.DeptId==Dept && x.Unit==Unit);
+                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.DeptId==Dept && x.UnitId==Unit);
                 return Json(new { data = products });
             }
-            if (value == null && Dept != 0 && Unit == "All Unit")
+            if (value == null && Dept != 0 && Unit == 0)
             {
                 var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.DeptId==Dept);
                 return Json(new { data = products });
             }
-            if (value == null && Dept == 0 && Unit != "All Unit")
+            if (value == null && Dept == 0 && Unit != 0)
             {
-                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.Unit==Unit);
+                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.UnitId==Unit);
                 return Json(new { data = products });
             }
-            if (value != null && Dept != 0 && Unit == "All Unit")
+            if (value != null && Dept != 0 && Unit == 0)
             {
                 var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.DeptId==Dept && (x.DisplayName.Contains(value) ||
                     x.IPNo.Contains(value) ||
                     x.Department.Name.Contains(value)));
                 return Json(new { data = products });
             }
-            if (value != null && Dept == 0 && Unit != "All Unit")
+            if (value != null && Dept == 0 && Unit != 0)
             {
-                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.Unit==Unit && (x.DisplayName.Contains(value) ||
+                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.UnitId==Unit && (x.DisplayName.Contains(value) ||
                     x.IPNo.Contains(value) ||
                     x.Department.Name.Contains(value)));
                 return Json(new { data = products });
             }
-            if (value != null && Dept != 0 && Unit != "All Unit")
+            if (value != null && Dept != 0 && Unit != 0)
             {
-                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.Unit==Unit && x.DeptId==Dept && (x.DisplayName.Contains(value) ||
+                var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).Where(x=>x.UnitId==Unit && x.DeptId==Dept && (x.DisplayName.Contains(value) ||
                     x.IPNo.Contains(value) ||
                     x.Department.Name.Contains(value)));
                 return Json(new { data = products });
@@ -368,6 +399,15 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                 }
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDepartmentByUnit(int UnitId)
+        {
+            var DepartmentList = await unitOfWork.department.GetAll().Where(x => x.UnitId == UnitId).ToListAsync();
+            return Json(new { data = DepartmentList });
+        }
+
+
         #endregion
     }
 }

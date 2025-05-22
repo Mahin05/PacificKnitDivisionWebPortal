@@ -18,9 +18,6 @@
                 </select>
                 <select id="unit">
                     <option value="0">All Unit</option>
-                    <option value="1">PKL</option>
-                    <option value="1">PCL1</option>
-                    <option value="1">PCL2</option>
                 </select>
                 <input id="SearchText" /> <button id="Search" class="btn-primary text-bg-info">Search</button>
 
@@ -44,6 +41,14 @@
                 method: 'GET',
                 dataType: 'json',
                 success: function (response) {
+                    if(response.unit){
+                        $.each(response.unit, function (i, unit) {
+                            $('#unit').append($('<option>', {
+                                value: unit.id,
+                                text: unit.name
+                            }));
+                        });
+                    }
                     if(response.dept){
                         //console.log("dept",response.dept);
                            $.each(response.dept, function (i, dept) {
@@ -70,7 +75,7 @@
                                 { title: "Department", field: "department.name", sorter: "string"/* , width: 200  */},
                                 { title: "IP No.", field: "ipNo", sorter: "string"/* , width: 200  */},
                                 { title: "Display Name", field: "displayName", sorter: "string"/* , width: 200  */},
-                                { title: "Unit", field: "unit", sorter: "string"/* , width: 200  */},
+                                { title: "Unit", field: "unit.name", sorter: "string"/* , width: 200  */},
                                 {
                                     title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
                                         var id = cell.getRow().getData().id;
@@ -218,7 +223,7 @@
                                 { title: "Department", field: "department.name", sorter: "string"/* , width: 200  */},
                                 { title: "IP No.", field: "ipNo", sorter: "string"/* , width: 200  */},
                                 { title: "Display Name", field: "displayName", sorter: "string"/* , width: 200  */},
-                                { title: "Unit", field: "unit", sorter: "string"/* , width: 200  */},
+                                { title: "Unit", field: "unit.name", sorter: "string"/* , width: 200  */},
                                 {
                                     title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
                                         var id = cell.getRow().getData().id;
@@ -280,7 +285,7 @@
                                 { title: "Department", field: "department.name", sorter: "string"/* , width: 200  */},
                                 { title: "IP No.", field: "ipNo", sorter: "string"/* , width: 200  */},
                                 { title: "Display Name", field: "displayName", sorter: "string"/* , width: 200  */},
-                                { title: "Unit", field: "unit", sorter: "string"/* , width: 200  */},
+                                { title: "Unit", field: "unit.name", sorter: "string"/* , width: 200  */},
                                 {
                                     title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
                                         var id = cell.getRow().getData().id;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -24,9 +25,9 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         }
 
         // GET: Admin/Unit
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.unit.ToListAsync());
+            return View();
         }
 
         // GET: Admin/Unit/Details/5
@@ -47,115 +48,78 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
             return View(unit);
         }
 
-        // GET: Admin/Unit/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Upsert(int? Id)
         {
-            return View();
+            if (Id == null)
+            {
+                return View(new Unit());
+            }
+            else
+            {
+                var unit = await unitOfWork.unit.Get(m => m.Id == Id);
+                if (unit == null)
+                {
+                    return NotFound();
+                }
+                return View(unit);
+            }
         }
 
-        // POST: Admin/Unit/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Unit unit)
+        public async Task<IActionResult> Upsert(Unit model)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(unit);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(unit);
-        }
-
-        // GET: Admin/Unit/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var unit = await _context.unit.FindAsync(id);
-            if (unit == null)
-            {
-                return NotFound();
-            }
-            return View(unit);
-        }
-
-        // POST: Admin/Unit/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Unit unit)
-        {
-            if (id != unit.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(unit);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!UnitExists(unit.Id))
+
+                    if (model.Id == null || model.Id==0)
                     {
-                        return NotFound();
+                        TempData["success"] = "Unit Created Successfully!";
+                        unitOfWork.unit.Add(model);
                     }
                     else
                     {
-                        throw;
+                        TempData["success"] = "Unit Updated Successfully!";
+                        unitOfWork.unit.Update(model);
                     }
+                    unitOfWork.Save();
+                    return RedirectToAction(nameof(Index));
+
                 }
-                return RedirectToAction(nameof(Index));
+                catch (Exception ex)
+                {
+                    TempData["error"] = "Something went wrong!";
+                }
             }
-            return View(unit);
-        }
-
-        // GET: Admin/Unit/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var unit = await _context.unit
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (unit == null)
-            {
-                return NotFound();
-            }
-
-            return View(unit);
+            return View(model);
         }
 
         // POST: Admin/Unit/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var unit = await _context.unit.FindAsync(id);
+            var unit = await unitOfWork.unit.Get(x=>x.Id==id);
             if (unit != null)
             {
-                _context.unit.Remove(unit);
+                await unitOfWork.unit.Remove(unit);
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            unitOfWork.Save();
+            return Json(new { success = "Unit Removed Successfully!" });
         }
 
-        private bool UnitExists(int id)
+        #region
+        [HttpGet]
+        public IActionResult GetAllUnit()
         {
-            return _context.unit.Any(e => e.Id == id);
+            var unitList = unitOfWork.unit.GetAll().ToListAsync();
+            return Json(new { data = unitList });
         }
+        #endregion
     }
 }

@@ -4,35 +4,106 @@
     ViewData["Title"] = "Index";
 }
 <div class="main-div">
-    <h1>Index</h1>
+    <h1 class="text-center">Units</h1>
 
     <p>
-        <a asp-action="Create">Create New</a>
+        <a class="btn btn-primary" asp-action="Upsert">Create New</a>
     </p>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+
+    <div id="department-table"></div>
 
 </div>
+@section Scripts {
+    <script type="text/javascript">
+                 //first load data=======================================
+             $.ajax({
+            url: '/Admin/Unit/GetAllUnit',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.data) {
+                        //console.log(response.data.result);
+                        //Build Tabulator
+                            table = new Tabulator("#department-table", {
+                            height: "300px",
+                            data: response.data.result,
+                            layout: "fitColumns",
+                            placeholder: "No Data Set",
+                            pagination: "local",
+                            paginationSize: 20,
+                            paginationSizeSelector: [3, 6, 8, 10],
+                            movableColumns: true,
+                            paginationCounter: "rows",
+                            columns: [
+                                { title: "Unit Name", field: "name", sorter: "string"},
+                                {
+                                    title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
+                                        var id = cell.getRow().getData().id;
+                                        return `<a href='/Admin/Unit/Upsert/${id}' class='btn btn-sm btn-success'><i class="bi bi-pen-fill"></i></a> <a class='btn btn-sm btn-danger delete-button' data-id='${id}'><i class="bi bi-trash-fill"></i></a>
+
+                                        `;
+                                    }
+                                }
+                            ],
+                        });
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+
+
+            //delete functionalities==================================
+            $(document).on('click', '.delete-button', function (e) {
+                e.preventDefault();
+
+                 var id = $(this).data('id');
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/Admin/Unit/Delete/' + id,
+                            type: 'POST',
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire(
+                                        'Deleted!',
+                                        response.message,
+                                        'success'
+                                    ).then(() => {
+                                        location.reload();
+                                    });
+                                }
+                                else {
+                                    Swal.fire(
+                                        'Failed!',
+                                        response.message || 'Something went wrong.',
+                                        'error'
+                                    );
+                                }
+                            },
+                            error: function () {
+                                Swal.fire(
+                                    'Error!',
+                                    'An error occurred while deleting.',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
+            });
+    </script>
+}

@@ -52,6 +52,13 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         // GET: Admin/Department/Create
         public async Task<IActionResult> Upsert(int? Id)
         {
+            IEnumerable<SelectListItem> UnitList = (unitOfWork.unit.GetAll())
+                .Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = x.Id.ToString()
+                });
+            ViewBag.UnitList = UnitList;
             if (Id == null)
             {
                 return View(new Department());
@@ -77,19 +84,29 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                IEnumerable<SelectListItem> UnitList = (unitOfWork.unit.GetAll())
+               .Select(x => new SelectListItem
+               {
+                   Text = x.Name,
+                   Value = x.Id.ToString()
+               });
+                ViewBag.UnitList = UnitList;
+
+                var UnitName = unitOfWork.unit.GetAll().Where(x => x.Id == department.UnitId).FirstOrDefault().Name;
+
                 if (department.Id == null || department.Id == 0)
                 {
-                    var DeptExist = unitOfWork.department.GetAll().FirstOrDefault(x => x.Name == department.Name && x.Unit==department.Unit);
+                    var DeptExist = unitOfWork.department.GetAll().FirstOrDefault(x => x.Name == department.Name && x.UnitId==department.UnitId);
                     if (DeptExist == null)
                     {
                         TempData["success"] = "Department Created Successfully!";
 
                         // Call stored procedure to insert
-                        await db.Database.ExecuteSqlRawAsync("EXEC CreateDepartment @p0,@p1,@p2", department.Name,department.Unit,department.DisplayNo);
+                        await db.Database.ExecuteSqlRawAsync("EXEC CreateDepartment @p0,@p1,@p2", department.Name,department.UnitId,department.DisplayNo);
                     }
                     else
                     {
-                        TempData["error"] = $"Department {department.Name} Is Already Exists!";
+                        TempData["error"] = $"Department {department.Name} in Unit {UnitName} Is Already Exists!";
                         return View(department);
                     }
                 }
@@ -236,15 +253,22 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         }
         #region
         [HttpGet]
-        public IActionResult GetAllDepartment()
+        public async Task<IActionResult> GetAllUnit()
         {
-            var departmentList = unitOfWork.department.GetAll().OrderBy(x=>x.DisplayNo).ThenBy(x=>x.Unit).ToListAsync();
-            return Json(new { data = departmentList });
+            var unitList =await unitOfWork.unit.GetAll().ToListAsync();
+            return Json(new { unit = unitList });
         }
         [HttpGet]
-        public IActionResult GetDisplayNo(string Unit)
+        public async Task<IActionResult> GetAllDepartment()
         {
-            var displayOrders = unitOfWork.department.GetAll().Where(x => x.Unit == Unit).Select(x => x.DisplayNo).ToList();
+            var departmentList = await unitOfWork.department.GetAll().OrderBy(x => x.UnitId).ThenBy(x => x.DisplayNo).ToListAsync();
+            var unitList =await unitOfWork.unit.GetAll().ToListAsync();
+            return Json(new { data = departmentList, unit = unitList });
+        }
+        [HttpGet]
+        public IActionResult GetDisplayNo(int Id)
+        {
+            var displayOrders = unitOfWork.department.GetAll().Where(x => x.Id == Id).Select(x => x.DisplayNo).ToList();
             if (!displayOrders.Any())
             {
                 return Ok(new { data = 0 });
@@ -264,32 +288,48 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                 
         }
         [HttpGet]
-        public IActionResult GetAllSearch(string value, string unit)
+        public IActionResult GetAllSearch(string value, int unit)
         {
-            if (value == null && unit==null)
+            if (value == null && unit==0)
             {
-                var department = unitOfWork.department.GetAll().ToListAsync();
+                var department = unitOfWork.department.GetAll().Include(x=>x.Unit).OrderBy(x=> x.DisplayNo).ToListAsync();
                 return Json(new { data = department });
             }
-            if(value != null && unit != null)
+            if(value != null && unit != 0)
             {
-                var department = unitOfWork.department.GetAll().Where(x=>x.Unit==unit && x.Name.Contains(value)).ToListAsync();
+                var department = unitOfWork.department.GetAll().Include(x => x.Unit).OrderBy(x => x.DisplayNo).Where(x=>x.UnitId==unit && x.Name.Contains(value)).ToListAsync();
                 return Json(new { data = department });
             }
-            if(value == null && unit != null)
+            if(value == null && unit != 0)
             {
-                var department = unitOfWork.department.GetAll().Where(x=>x.Unit==unit).ToListAsync();
+                var department = unitOfWork.department.GetAll().Include(x=>x.Unit).OrderBy(x=> x.DisplayNo).Where(x=>x.UnitId ==unit).ToListAsync();
                 return Json(new { data = department });
             }
             else
             {
-                var department = unitOfWork.department.GetAll().Where(
+                var department = unitOfWork.department.GetAll().Include(x=>x.Unit).OrderBy(x=> x.DisplayNo).Where(
                     x => x.Name.Contains(value)
                     ).ToListAsync();
                 return Json(new { data = department });
             }
 
         }
+        [HttpPost]
+        public async Task<IActionResult> UpdateSelectedDeptDOrder(int DeptId, int DisplayNo)
+        {
+            var department = await unitOfWork.department.Get(x => x.Id == DeptId);
+            if (department != null)
+            {
+                department.DisplayNo = DisplayNo;
+                unitOfWork.department.Update(department);
+                unitOfWork.Save();
+
+                return Json(new { success = true});
+            }
+
+            return Json(new { success = false, message = "Department not found." });
+        }
+
         #endregion
     }
 }

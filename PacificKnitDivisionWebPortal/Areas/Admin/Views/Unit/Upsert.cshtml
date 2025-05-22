@@ -1,0 +1,45 @@
+﻿@model PacificKnitDivisionWebPortal.Models.Unit
+
+@{
+    ViewData["Title"] = "Create";
+}
+<div class="main-div">
+
+    <h1 class="text-center">Create</h1>
+    <hr />
+    <div class="row">
+        <div class="col-md-4" style="margin:auto;margin-right:auto;">
+            <form asp-action="Upsert">
+                <input asp-for="Id" hidden />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group fw-bold mb-2">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group fw-bold mb-2">
+                    @if (Model.Id != 0)
+                    {
+                        <button type="submit" value="Create" class="btn btn-success">Update</button>
+                    }
+                    else
+                    {
+
+                        <button type="submit" value="Create" class="btn btn-primary">Create</button>
+                    }
+                </div>
+            </form> 
+            <div>
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </div>
+    </div>
+
+   
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
