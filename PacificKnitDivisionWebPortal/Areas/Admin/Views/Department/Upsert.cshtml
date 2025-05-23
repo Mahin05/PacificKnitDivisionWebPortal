@@ -31,19 +31,35 @@
                     <span asp-validation-for="UnitId" class="text-danger"></span>
                 </div>
                 <div class="form-group fw-bold mb-2">
+                    <label class="control-label">Display No.</label> <br />
+                    <select asp-for="ShowFlag">
+                        <option selected value="0">Default</option>
+                        <option value="1">Show Before</option>
+                        <option value="2">Show After</option>
+                    </select>
+                    <span class="text-danger"></span>
+                </div>
+             @*    <div class="form-group fw-bold mb-2">
                     <div class="form-check">
-                        <input class="form-check-input" value="0" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                        <label class="form-check-label" for="flexRadioDefault1">
+                        <input class="form-check-input" type="radio" asp-for="ShowFlag" value="0" id="showFlag0" />
+                        <label class="form-check-label" for="showFlag0">
+                            Default
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" asp-for="ShowFlag" value="1" id="showFlag1" />
+                        <label class="form-check-label" for="showFlag1">
                             Show Before
                         </label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" value="1" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-                        <label class="form-check-label" for="flexRadioDefault2">
+                        <input class="form-check-input" type="radio" asp-for="ShowFlag" value="2" id="showFlag2" />
+                        <label class="form-check-label" for="showFlag2">
                             Show After
                         </label>
                     </div>
-                </div>
+
+                </div> *@
                 <div class="form-group fw-bold mb-2">
                     <label class="control-label">Department</label> <br />
                     <select id="Dept">
@@ -51,9 +67,9 @@
                     </select>
                     <span class="text-danger"></span>
                 </div>
-                <div class="form-group fw-bold mb-2">
+                <div class="form-group fw-bold mb-2 d-none">
                     <label asp-for="DisplayNo" class="control-label"></label>
-                    <input asp-for="DisplayNo" class="form-control" id="DisplayNo"  />
+                    <input asp-for="DisplayNo" class="form-control" id="DisplayNo" />
                     <span asp-validation-for="DisplayNo" class="text-danger"></span>
                 </div>
                 <div class="form-group fw-bold mb-2">
@@ -98,45 +114,66 @@
 
 
                             //alert(ShowFlag);
+        $("#Unit").on("change", function () {
+                        var value = $(this).val();
+                            //alert(value);
+                        $.ajax({
+                            url: '/Admin/Department/GetDepartmentByUnit',
+                            method: 'GET',
+                            dataType: 'json',
+                            data: { UnitId: value },
+                            success: function (response) {
+                                //console.log("response", response);
 
-
-
-
-
-                $("#Unit").on("change", function () {
-                var value = $(this).val();
-
-                $.ajax({
-                    url: '/Admin/IPPhoneDetails/GetDepartmentByUnit',
-                    method: 'GET',
-                    dataType: 'json',
-                    data: { UnitId: value },
-                    success: function (response) {
-                        //console.log("response", response);
-
-                        var $dept = $('#Dept');
-                        $dept.empty();
-                        $dept.append($('<option>', {
-                            value: '',
-                            text: '-- Select Department --'
-                        }));
-
-                        if (response.data && response.data.length > 0) {
-                            $.each(response.data, function (i, dept) {
+                                var $dept = $('#Dept');
+                                $dept.empty();
                                 $dept.append($('<option>', {
-                                    value: dept.id,
-                                    text: dept.name
+                                    value: '',
+                                    text: '-- Select Department --'
                                 }));
-                            });
-                        } else {
-                            console.log("No data found.");
+
+                                if (response.data && response.data.length > 0) {
+                                    $.each(response.data, function (i, dept) {
+                                        $dept.append($('<option>', {
+                                            value: dept.id,
+                                            text: dept.name
+                                        }));
+                                    });
+                                } else {
+                                    console.log("No data found.");
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("An error occurred: " + error);
+                            }
+                        });
+                   
+                    
+                         $.ajax({
+                                url: '/Admin/Department/GetDisplayOrderByUnit',
+                        method: 'GET',
+                            dataType: 'json',
+                                data: { UnitId: value},
+                            success: function (response) {
+                                if (response.data) {
+                                    console.log(response.data);
+                                 $("#DisplayNo").val(response.data);
+
+
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("An error occurred: " + error);
-                    }
-                });
+                        else {
+                                console.log("No data found.");
+                                $("#DisplayNo").val(1);
+                        }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
             });
+                    
+                    
+                    
+                    });
 
                     var Unit = $("#Dept").on("change",function(){
                     var value = $(this).val();
@@ -145,18 +182,11 @@
                         url: '/Admin/Department/GetDisplayNo',
                     method: 'GET',
                         dataType: 'json',
-                                        data: { Id: value},
+                        data: { Id: value},
                         success: function (response) {
                             if (response.data) {
-                                //console.log(response.data);
-                                    if(ShowFlag==0){
-
-                                       $("#DisplayNo").val(response.data-1);
-                                    }
-                                    else if(ShowFlag==1){
-
-                                       $("#DisplayNo").val(response.data+1);
-                                    }
+                                console.log(response.data);
+                             $("#DisplayNo").val(response.data);
 
 
                     }
@@ -170,48 +200,5 @@
             }
         });
     });
-
-
-     // function myFunction(){
-     //    $("#btn-submit").on("click",function(){
-     //                        event.preventDefault();
-     //                    alert("asas");
-     //                //==================== Update selected department display order
-     //                var DisplayNo;
-     //                var previousDisplayNo = parseInt($("#DisplayNo").val());
-
-     //                if (ShowFlag == 0) {
-     //                    DisplayNo = previousDisplayNo + 1;
-     //                } else if (ShowFlag == 1) {
-     //                    DisplayNo = previousDisplayNo - 1;
-     //                }
-
-     //                $.ajax({
-     //                    url: '/Admin/Department/UpdateSelectedDeptDOrder',
-     //                    method: 'POST',
-     //                    dataType: 'json',
-     //                    data: {
-     //                        DeptId: value,
-     //                        DisplayNo: DisplayNo
-     //                    },
-     //                    success: function (response) {
-     //                        if (response.data) {
-     //                            // Optionally update DisplayNo field if needed:
-     //                            // $("#DisplayNo").val(response.data);
-     //                        } else {
-     //                            console.log("No data found.");
-     //                            $("#DisplayNo").val(1);
-     //                        }
-     //                    },
-     //                    error: function (xhr, status, error) {
-     //                        console.error("An error occurred: " + error);
-     //                    }
-     //                });
-
-     //                });
-     // };
-    // $(document).ready(function(){
-            
-    // });
     </script>
 }

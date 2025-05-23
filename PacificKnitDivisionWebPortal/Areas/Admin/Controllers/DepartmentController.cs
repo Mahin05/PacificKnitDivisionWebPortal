@@ -102,7 +102,7 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                         TempData["success"] = "Department Created Successfully!";
 
                         // Call stored procedure to insert
-                        await db.Database.ExecuteSqlRawAsync("EXEC CreateDepartment @p0,@p1,@p2", department.Name,department.UnitId,department.DisplayNo);
+                        await db.Database.ExecuteSqlRawAsync("EXEC CreateAndUpdateDepartment @p0,@p1,@p2,@p3,@p4", department.Id, department.Name,department.UnitId,department.DisplayNo, department.ShowFlag);
                     }
                     else
                     {
@@ -117,8 +117,10 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                     {
 
                         TempData["success"] = "Department Updated Successfully!";
-                        unitOfWork.department.Update(department);
-                        unitOfWork.Save();
+                        await db.Database.ExecuteSqlRawAsync("EXEC CreateAndUpdateDepartment @p0,@p1,@p2,@p3,@p4", department.Id, department.Name, department.UnitId, department.DisplayNo, department.ShowFlag);
+
+                        //unitOfWork.department.Update(department);
+                        //unitOfWork.Save();
                     }
                     else
                     {
@@ -127,8 +129,8 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                     }
                 }
 
-                //return RedirectToAction(nameof(Index));
-                return View(department);
+                return RedirectToAction(nameof(Upsert));
+                //return View(department);
             }
 
             return View(department);
@@ -314,22 +316,32 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
             }
 
         }
-        [HttpPost]
-        public async Task<IActionResult> UpdateSelectedDeptDOrder(int DeptId, int DisplayNo)
+        [HttpGet]
+        public async Task<IActionResult> GetDepartmentByUnit(int UnitId)
         {
-            var department = await unitOfWork.department.Get(x => x.Id == DeptId);
-            if (department != null)
+            var DepartmentList = await unitOfWork.department.GetAll().Where(x => x.UnitId == UnitId).ToListAsync();
+            return Json(new { data = DepartmentList });
+        }
+        [HttpGet]
+        public IActionResult GetDisplayOrderByUnit(int UnitId)
+        {
+            var displayOrders = unitOfWork.department.GetAll().Where(x => x.UnitId == UnitId).Select(x => x.DisplayNo).ToList();
+            if (!displayOrders.Any())
             {
-                department.DisplayNo = DisplayNo;
-                unitOfWork.department.Update(department);
-                unitOfWork.Save();
-
-                return Json(new { success = true});
+                return Ok(new { data = 0 });
             }
 
-            return Json(new { success = false, message = "Department not found." });
-        }
+            var displayOrder = displayOrders.Max();
 
+            if (displayOrder == 0)
+            {
+                return Ok(new { data = 0 });
+            }
+            else
+            {
+                return Json(new { data = displayOrder });
+            }
+        }
         #endregion
     }
 }

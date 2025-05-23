@@ -15,5 +15,7 @@ namespace PacificKnitDivisionWebPortal.Models
         [Display(Name = "Unit")]
         public int UnitId { get; set; }
         public Unit ?Unit { get; set; }
+        [NotMapped]
+        public int ShowFlag { get; set; }
     }
 }

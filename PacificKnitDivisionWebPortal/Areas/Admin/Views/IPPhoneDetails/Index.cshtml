@@ -196,18 +196,18 @@
         $("#Search").on("click", function () {
             var value = $("#SearchText").val();
             var Dept = $("#dept").val();
-            var Unit = $("#unit option:selected").text();
+            var Unit = $("#unit option:selected").val();
             console.log("Unit",Unit);
             //console.log(value);
 
             $.ajax({
-                url: '/Admin/IPPhoneDetails/GetAllSearch?value='+value+'&Dept='+Dept+'&unit='+Unit,
+                url: '/Admin/IPPhoneDetails/GetAllSearch?value='+value+'&Dept='+Dept+'&Unit='+Unit,
                 method: 'GET',
                 dataType: 'json',
                 success: function (response) {
                     //console.log("responsedata", response);
                     if (response.data) {
-                        //console.log(response.data);
+                        console.log(response.data);
                         //Build Tabulator
                             table = new Tabulator("#ipphonedetails-table", {
                             height: "800px",
