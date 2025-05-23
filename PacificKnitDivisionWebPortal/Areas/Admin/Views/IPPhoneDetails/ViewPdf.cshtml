@@ -5,92 +5,134 @@
 	table, th, td {
 		border: 1px solid black;
 	}
+/* 
+    tr, td, th {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    /* Add a forced page break before each new unit (e.g., Casuals Unit-1/2) */
+    .pdf-page-break {
+        page-break-before: always !important;
+        break-before: page !important;
+    }
+
+    /* Make sure each section stays intact */
+    .pdf-section {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    @@media print {
+        body
+
+    {
+        margin: 0;
+        padding: 0;
+        font-size: 10px;
+    }
+
+    table {
+        width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #000;
+        padding: 4px;
+        text-align: center;
+    }
+
+    .pdf-page-break {
+        page-break-before: always !important;
+        break-before: page !important;
+    }
+
+    .pdf-section {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    /* Hide buttons or UI elements in print */
+    #download-pdf, .no-print {
+        display: none !important;
+    }
+
+    }
 </style>
-<a class="btn btn-link text-info" asp-area="admin" asp-action="Index">Go Back</a>
-<button id="download-pdf">Download PDF</button>
+@* <a class="btn btn-link text-info" asp-area="admin" asp-action="Index">Go Back</a>
+<button id="download-pdf">Download PDF</button> *@
 
 <div class="main-div" style="font-size:10px">
-    <table style="width:65%;margin-left:auto;margin-right:auto">
-        <tr class="text-center">
-            <th style="background-color: #009ad9bd;
-    color: white;
-    font-size: 12px;">Pacific Knit Division IP phone Index</th>
-        </tr>
-    </table>
+    <!-- Pacific Knitex Ltd. -->
+    <div class="company-section pdf-section">
+        <table style="width:65%;margin-left:auto;margin-right:auto;">
+            <tr class="text-center">
+                <th style="background-color: #009ad9bd; color: white; font-size: 12px;">Pacific Knitex Ltd.</th>
+            </tr>
+        </table>
+        <table style="width:65%;margin-left:auto;margin-right:auto">
+            <tr class="text-center">
+                <th style="width:120px;background-color:#ffb938">Department</th>
+                <th style="background-color:#ffb938">IP No.</th>
+                <th style="background-color:#ffb938">Display Name</th>
+                <th style="background-color:#ffb938;width:100px;">Unit</th>
+            </tr>
+            <tbody id="PKL-BOD"></tbody>
+            <tbody id="PKL-RestData"></tbody>
+        </table>
+    </div>
 
+    <!-- Pacific Casuals Ltd. (Unit-1) -->
+    <div class="company-section page-break pdf-section pdf-page-break ">
+        <table style="width:65%;margin-left:auto;margin-right:auto;" class="mt-5">
+            <tr class="text-center">
+                <th style="background-color: #009ad9bd; color: white; font-size: 12px;">Pacific Casuals Ltd.(Unit-1)</th>
+            </tr>
+        </table>
+        <table style="width:65%;margin-left:auto;margin-right:auto">
+            <tr class="text-center">
+                <th style="width:120px;background-color:#ffb938">Department</th>
+                <th style="background-color:#ffb938">IP No.</th>
+                <th style="background-color:#ffb938">Display Name</th>
+                <th style="background-color:#ffb938;width:100px;">Unit</th>
+            </tr>
+            <tbody id="PCL1-BOD"></tbody>
+            <tbody id="PCL1-RestData"></tbody>
+        </table>
+    </div>
 
-    @* ------------------table for PKL STARTS--------------------- *@
-    <table style="width:65%;margin-left:auto;margin-right:auto">
-        <tr class="text-center">
-            <th style="background-color: #009ad9bd;
-    color: white;
-    font-size: 12px;">Pacific Knitex Ltd.</th>
-        </tr>
-    </table>
-    <table style="width:65%;margin-left:auto;margin-right:auto">
-        <tr class="text-center">
-            <th style="width:120px;background-color:#ffb938">Department</th>
-            <th style="background-color:#ffb938">IP No.</th>
-            <th style="background-color:#ffb938">Display Name</th>
-            <th style="background-color:#ffb938;width:100px;">Unit</th>
-            @* <th style="background-color:#ffb938;width:100px;">Display Order</th> *@
-        </tr>
-        <tbody id="PKL-BOD">
-        </tbody>
-        <tbody id="PKL-RestData">
-        </tbody>
-    </table>
-    @* ------------------table for PKL ENDS--------------------- *@
+    <!-- Pacific Casuals Ltd. (Unit-2) -->
+    <div class="company-section page-break pdf-section pdf-page-break ">
+        <table style="width:65%;margin-left:auto;margin-right:auto;" class="mt-5">
+            <tr class="text-center">
+                <th style="background-color: #009ad9bd; color: white; font-size: 12px;">Pacific Casuals Ltd.(Unit-2)</th>
+            </tr>
+        </table>
+        <table style="width:65%;margin-left:auto;margin-right:auto">
+            <tr class="text-center">
+                <th style="width:120px;background-color:#ffb938">Department</th>
+                <th style="background-color:#ffb938">IP No.</th>
+                <th style="background-color:#ffb938">Display Name</th>
+                <th style="background-color:#ffb938;width:100px;">Unit</th>
+            </tr>
+            <tbody id="PCL2-RestData"></tbody>
+        </table>
+    </div>
 
-
-    @* ------------------table for PCL1 STARTS--------------------- *@
-    <table style="width:65%;margin-left:auto;margin-right:auto" class="mt-5">
-        <tr class="text-center">
-            <th style="background-color: #009ad9bd;
-    color: white;
-    font-size: 12px;">Pacific Casuals Ltd.(Unit-1)</th>
-        </tr>
-    </table>
-    <table style="width:65%;margin-left:auto;margin-right:auto">
-        <tr class="text-center">
-            <th style="width:120px;background-color:#ffb938">Department</th>
-            <th style="background-color:#ffb938">IP No.</th>
-            <th style="background-color:#ffb938">Display Name</th>
-            <th style="background-color:#ffb938;width:100px;">Unit</th>
-            @* <th style="background-color:#ffb938;width:100px;">Display Order</th> *@
-        </tr>
-        <tbody id="PCL1-BOD">
-        </tbody>
-        <tbody id="PCL1-RestData">
-        </tbody>
-    </table>
-    @* ------------------table for PCL1 ENDS--------------------- *@
-
-
-    @* ------------------table for PCL2 STARTS--------------------- *@
-    <table style="width:65%;margin-left:auto;margin-right:auto" class="mt-5">
-        <tr class="text-center">
-            <th style="background-color: #009ad9bd;
-    color: white;
-    font-size: 12px;">Pacific Casuals Ltd.(Unit-2)</th>
-        </tr>
-    </table>
-    <table style="width:65%;margin-left:auto;margin-right:auto">
-        <tr class="text-center">
-            <th style="width:120px;background-color:#ffb938">Department</th>
-            <th style="background-color:#ffb938">IP No.</th>
-            <th style="background-color:#ffb938">Display Name</th>
-            <th style="background-color:#ffb938;width:100px;">Unit</th>
-            @* <th style="background-color:#ffb938;width:100px;">Display Order</th> *@
-        </tr>
-        <tbody id="PCL2-RestData">
-        </tbody>
-    </table>
-    @* ------------------table for PCL2 ENDS--------------------- *@
 </div>
 
 @section Scripts {
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+
 
     <script type="text/javascript">
          $(document).ready(function () {
@@ -360,16 +402,13 @@
 
              LoadPKDData();
         });
-          
-        
-        
-        
-        
-        document.getElementById("download-pdf").addEventListener("click", function () {
+
+
+            document.getElementById("download-pdf").addEventListener("click", function () {
           var element = document.querySelector(".main-div");
 
           var opt = {
-            margin:       [0.7, 0.1, 0.7, 0.1],  // top, left, bottom, right (inches)
+            margin:       [0.9, 0.1, 0.9, 0.1],
             filename:     'IP Phone Index.pdf',
             image:        { type: 'jpeg', quality: 1.00 },
             html2canvas:  { scale: 4, useCORS: true },

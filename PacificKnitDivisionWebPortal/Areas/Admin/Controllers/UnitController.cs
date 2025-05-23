@@ -87,7 +87,7 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                         unitOfWork.unit.Update(model);
                     }
                     unitOfWork.Save();
-                    return RedirectToAction(nameof(Index));
+                    //return RedirectToAction(nameof(Index));
 
                 }
                 catch (Exception ex)
@@ -95,7 +95,7 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                     TempData["error"] = "Something went wrong!";
                 }
             }
-            return View(model);
+            return RedirectToAction(nameof(Upsert));
         }
 
         // POST: Admin/Unit/Delete/5
