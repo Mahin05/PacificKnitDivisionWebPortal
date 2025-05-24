@@ -40,6 +40,11 @@ public class HomeController : Controller
         return View();
     }
 
+    public async Task<IActionResult> IPPhoneIndex()
+    {
+        var list = unitOfWork.iPPhoneDetails.GetAll().Include(i => i.Department);
+        return View(await list.ToListAsync());
+    }
     public IActionResult Privacy()
     {
         return View();
@@ -73,6 +78,71 @@ public class HomeController : Controller
                 return Json(new { Table1 = table1, Table2 = table2, Table3 = table3 });
             }
         }
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetAllIPPhoneDetails()
+    {
+        var iPPhoneDetails = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit);
+        var department = unitOfWork.department.GetAll();
+        var unitList = await unitOfWork.unit.GetAll().ToListAsync();
+        return Json(new { data = iPPhoneDetails, dept = department, unit = unitList });
+    }
+
+
+    [HttpGet]
+    public IActionResult GetAllSearch(string value, int Dept, int Unit)
+    {
+        if (value == null && Dept == 0 && Unit == 0)
+        {
+            var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit);
+            return Json(new { data = products });
+        }
+        if (value == null && Dept != 0 && Unit != 0)
+        {
+            var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Where(x => x.DeptId == Dept && x.UnitId == Unit);
+            return Json(new { data = products });
+        }
+        if (value == null && Dept != 0 && Unit == 0)
+        {
+            var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Where(x => x.DeptId == Dept);
+            return Json(new { data = products });
+        }
+        if (value == null && Dept == 0 && Unit != 0)
+        {
+            var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Where(x => x.UnitId == Unit);
+            return Json(new { data = products });
+        }
+        if (value != null && Dept != 0 && Unit == 0)
+        {
+            var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Where(x => x.DeptId == Dept && (x.DisplayName.Contains(value) ||
+                x.IPNo.Contains(value) ||
+                x.Department.Name.Contains(value)));
+            return Json(new { data = products });
+        }
+        if (value != null && Dept == 0 && Unit != 0)
+        {
+            var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Where(x => x.UnitId == Unit && (x.DisplayName.Contains(value) ||
+                x.IPNo.Contains(value) ||
+                x.Department.Name.Contains(value)));
+            return Json(new { data = products });
+        }
+        if (value != null && Dept != 0 && Unit != 0)
+        {
+            var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Where(x => x.UnitId == Unit && x.DeptId == Dept && (x.DisplayName.Contains(value) ||
+                x.IPNo.Contains(value) ||
+                x.Department.Name.Contains(value)));
+            return Json(new { data = products });
+        }
+        else
+        {
+            var products = unitOfWork.iPPhoneDetails.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Where(
+                x => x.DisplayName.Contains(value) ||
+                x.IPNo.Contains(value) ||
+                x.Department.Name.Contains(value)
+                );
+            return Json(new { data = products });
+        }
+
     }
     #endregion
 }

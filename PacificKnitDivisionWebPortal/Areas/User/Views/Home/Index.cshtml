@@ -74,7 +74,34 @@
                         }
 
                         if (data.fileType === "Info") {
-                            var infoParentDiv = document.getElementById("info-div");
+
+                            console.log("data",data.name);
+                            if(data.name=="IP Phone Index"){
+                                 var infoParentDiv = document.getElementById("info-div");
+
+                            var infoDiv = document.createElement("div");
+                            infoDiv.innerHTML = `
+                                <table class="table table-borderless table-sm mb-2">
+                                    <tbody class="border-shadow">
+                                        <tr>
+                                            <th class="p-3" style="width: 5%;">${data.displayOrder}</th>
+                                            <td class="text-start p-3 fw-bold"><a target="_blank" href="/User/Home/IPPhoneIndex" class="text-dark">${data.name}</a></td>
+                                            <td class="text-end">
+                                                <a href="${data.fileUrl}" download class="btn text-white mt-2" style="background-color:#061640;font-size: 12px;">
+                                                    <i class="bi bi-cloud-arrow-down"></i> Download
+                                                </a>
+                                                <a target="_blank" href="${data.fileUrl}" class="btn text-white mt-2" style="background-color:#061640;font-size: 12px;">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            `;
+                            infoParentDiv.appendChild(infoDiv);
+                            }
+                            else{
+                                var infoParentDiv = document.getElementById("info-div");
 
                             var infoDiv = document.createElement("div");
                             infoDiv.innerHTML = `
@@ -96,6 +123,8 @@
                                 </table>
                             `;
                             infoParentDiv.appendChild(infoDiv);
+                            }
+                            
                         }
 
                         if (data.fileType === "Files") {

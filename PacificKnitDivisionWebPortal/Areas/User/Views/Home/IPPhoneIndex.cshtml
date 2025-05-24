@@ -1,0 +1,189 @@
+﻿@model IEnumerable<PacificKnitDivisionWebPortal.Models.IPPhoneDetails>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="main-div">
+    <h1 class="text-center">IP Phone Details List</h1>
+    <div class="row mb-3">
+        <div class="col-md-6 mt-2">
+            <div class="float-end">
+                <select id="dept" class="w-25">
+                    <option value="0">All Department</option>
+                </select>
+                <select id="unit">
+                    <option value="0">All Unit</option>
+                </select>
+                <input id="SearchText" /> <button id="Search" class="btn-primary text-bg-info">Search</button>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="ipphonedetails-table"></div>
+</div>
+
+
+
+
+@section Scripts {
+    <script type="text/javascript">
+         $(document).ready(function () {
+
+             //first load data=======================================
+             $.ajax({
+                url: '/User/Home/GetAllIPPhoneDetails',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if(response.unit){
+                        $.each(response.unit, function (i, unit) {
+                            $('#unit').append($('<option>', {
+                                value: unit.id,
+                                text: unit.name
+                            }));
+                        });
+                    }
+                    if(response.dept){
+                        //console.log("dept",response.dept);
+                           $.each(response.dept, function (i, dept) {
+                            $('#dept').append($('<option>', {
+                                value: dept.id,
+                                text: dept.name
+                            }));
+                        });
+                    }
+                    if (response.data) {
+                        //console.log(response.data);
+                        //Build Tabulator
+                            table = new Tabulator("#ipphonedetails-table", {
+                            height: "800px",
+                            data: response.data,
+                            layout: "fitColumns",
+                            placeholder: "No Data Set",
+                            pagination: "local",
+                            paginationSize: 26,
+                            paginationSizeSelector: [3, 6, 8, 10,20,26],
+                            movableColumns: true,
+                            paginationCounter: "rows",
+                            columns: [
+                                { title: "Department", field: "department.name", sorter: "string"/* , width: 200  */},
+                                { title: "IP No.", field: "ipNo", sorter: "string"/* , width: 200  */},
+                                { title: "Display Name", field: "displayName", sorter: "string"/* , width: 200  */},
+                                { title: "Unit", field: "unit.name", sorter: "string"/* , width: 200  */}
+                            ],
+                        });
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+
+        //search===================================================
+        $("#Search").on("click", function () {
+            var value = $("#SearchText").val();
+            var Dept = $("#dept").val();
+            var Unit = $("#unit option:selected").val();
+            console.log("Unit",Unit);
+            //console.log(value);
+
+            $.ajax({
+                url: '/User/Home/GetAllSearch?value='+value+'&Dept='+Dept+'&Unit='+Unit,
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    //console.log("responsedata", response);
+                    if (response.data) {
+                        console.log(response.data);
+                        //Build Tabulator
+                            table = new Tabulator("#ipphonedetails-table", {
+                            height: "800px",
+                            data: response.data,
+                            layout: "fitColumns",
+                            placeholder: "No Data Set",
+                            pagination: "local",
+                            paginationSize: 26,
+                            paginationSizeSelector: [3, 6, 8, 10,20,26],
+                            movableColumns: true,
+                            paginationCounter: "rows",
+                            columns: [
+                                { title: "Department", field: "department.name", sorter: "string"/* , width: 200  */},
+                                { title: "IP No.", field: "ipNo", sorter: "string"/* , width: 200  */},
+                                { title: "Display Name", field: "displayName", sorter: "string"/* , width: 200  */},
+                                { title: "Unit", field: "unit.name", sorter: "string"/* , width: 200  */}
+                            ],
+                        });
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        });
+
+
+
+
+
+
+
+
+            var input = document.getElementById("SearchText");
+            input.addEventListener("keypress", function(event) {
+              if (event.key === "Enter") {
+             //alert("asasa");
+             var value = $("#SearchText").val();
+            var Dept = $("#dept").val();
+            var Unit = $("#unit option:selected").text();
+            console.log("Unit",Unit);
+            //console.log(value);
+
+            $.ajax({
+                url: '/User/Home/GetAllSearch?value='+value+'&Dept='+Dept+'&unit='+Unit,
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    //console.log("responsedata", response);
+                    if (response.data) {
+                        //console.log(response.data);
+                        //Build Tabulator
+                            table = new Tabulator("#ipphonedetails-table", {
+                            height: "800px",
+                            data: response.data,
+                            layout: "fitColumns",
+                            placeholder: "No Data Set",
+                            pagination: "local",
+                            paginationSize: 26,
+                            paginationSizeSelector: [3, 6, 8, 10,20,26],
+                            movableColumns: true,
+                            paginationCounter: "rows",
+                            columns: [
+                                { title: "Department", field: "department.name", sorter: "string"/* , width: 200  */},
+                                { title: "IP No.", field: "ipNo", sorter: "string"/* , width: 200  */},
+                                { title: "Display Name", field: "displayName", sorter: "string"/* , width: 200  */},
+                                { title: "Unit", field: "unit.name", sorter: "string"/* , width: 200  */}
+                            ],
+                        });
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+                event.preventDefault();
+              }
+            });
+        });
+
+    </script>
+}
