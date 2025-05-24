@@ -237,16 +237,35 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var department = await unitOfWork.department.Get(x=>x.Id==id);
-            if (department != null)
+            try
             {
-                //TempData["success"] = "Department Removed Successfully!";
-                await unitOfWork.department.Remove(department);
-            }
 
-            unitOfWork.Save();
-            return Json(new { success = "Department Removed Successfully!" });
-            //return RedirectToAction(nameof(Index));
+                var department = await unitOfWork.department.Get(x => x.Id == id);
+
+                var ipphonelist = unitOfWork.iPPhoneDetails.GetAll().FirstOrDefault(x => x.DeptId == id);
+
+                if (ipphonelist == null)
+                {
+                    if (department != null)
+                    {
+                        //TempData["success"] = "Department Removed Successfully!";
+                        await unitOfWork.department.Remove(department);
+                    }
+
+                    unitOfWork.Save();
+                    return Json(new { success = "Department Removed Successfully!" });
+                }
+                else
+                {
+                    return Json(new { error = "Cannot Remove Department!" });
+                }
+               
+                //return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                return Json(new { error = "Cannot delete department!" });
+            }
         }
 
         private bool DepartmentExists(int id)

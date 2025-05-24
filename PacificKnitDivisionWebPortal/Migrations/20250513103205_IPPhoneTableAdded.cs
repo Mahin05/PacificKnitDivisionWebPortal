@@ -29,7 +29,7 @@ namespace PacificKnitDivisionWebPortal.Migrations
                         column: x => x.DeptId,
                         principalTable: "department",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
