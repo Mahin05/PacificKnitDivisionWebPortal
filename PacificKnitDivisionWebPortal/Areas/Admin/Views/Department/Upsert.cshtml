@@ -26,47 +26,29 @@
                 <div class="form-group fw-bold mb-2">
                     <label asp-for="UnitId" class="control-label"></label> <br />
                     <select asp-for="UnitId" asp-items="ViewBag.UnitList" id="Unit">
-                        <option selected disabled>--Select Unit--</option>
+                        <option selected>--Select Unit--</option>
                     </select>
                     <span asp-validation-for="UnitId" class="text-danger"></span>
                 </div>
-                <div class="form-group fw-bold mb-2">
-                    <label class="control-label">Display No.</label> <br />
-                    <select asp-for="ShowFlag">
-                        <option selected value="0">Default</option>
-                        <option value="1">Show Before</option>
-                        <option value="2">Show After</option>
-                    </select>
-                    <span class="text-danger"></span>
+                <div class="d-flex">
+                    <div class="form-group fw-bold mb-2">
+                        <label class="control-label">Display Order</label> <br />
+                        <select asp-for="ShowFlag">
+                            <option selected value="0">Default</option>
+                            <option value="1">Show Before</option>
+                            <option value="2">Show After</option>
+                        </select>
+                        <span class="text-danger"></span>
+                    </div>
+                    <div class="form-group fw-bold mb-2 ms-4" id="dep-div" style="display:none">
+                        <label class="control-label">Department</label> <br />
+                        <select id="Dept">
+                            <option selected disabled>--Select Department--</option>
+                        </select>
+                        <span class="text-danger"></span>
+                    </div>
                 </div>
-             @*    <div class="form-group fw-bold mb-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" asp-for="ShowFlag" value="0" id="showFlag0" />
-                        <label class="form-check-label" for="showFlag0">
-                            Default
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" asp-for="ShowFlag" value="1" id="showFlag1" />
-                        <label class="form-check-label" for="showFlag1">
-                            Show Before
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" asp-for="ShowFlag" value="2" id="showFlag2" />
-                        <label class="form-check-label" for="showFlag2">
-                            Show After
-                        </label>
-                    </div>
-
-                </div> *@
-                <div class="form-group fw-bold mb-2">
-                    <label class="control-label">Department</label> <br />
-                    <select id="Dept">
-                        <option selected disabled>--Select Department--</option>
-                    </select>
-                    <span class="text-danger"></span>
-                </div>
+                
                 <div class="form-group fw-bold mb-2 d-none">
                     <label asp-for="DisplayNo" class="control-label"></label>
                     <input asp-for="DisplayNo" class="form-control" id="DisplayNo" />
@@ -200,5 +182,16 @@
             }
         });
     });
+
+        $("#ShowFlag").on("change",function(){
+            var val = $(this).val();
+            //alert(val)
+            if(val==0){
+                    $("#dep-div").css("display","none");
+            }
+            else{
+                    $("#dep-div").css("display","block");
+            }
+        });
     </script>
 }

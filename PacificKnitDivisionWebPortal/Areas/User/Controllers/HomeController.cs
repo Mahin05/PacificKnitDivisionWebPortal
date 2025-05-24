@@ -56,6 +56,7 @@ public class HomeController : Controller
         return View();
     }
     #region API
+
     [HttpGet]
     public async Task<IActionResult> GetIPPhoneOfPKD()
     {

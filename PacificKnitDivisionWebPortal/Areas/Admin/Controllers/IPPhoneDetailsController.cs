@@ -141,7 +141,7 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                     }
                     else
                     {
-                        TempData["error"] = $"IP Phone No {model.IPNo} already exists!";
+                        TempData["error"] = $"IP Phone No {model.IPNo} Already Exists!";
                     }
                 }
                 else
@@ -154,7 +154,7 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                     }
                     else
                     {
-                        TempData["error"] = $"IP Phone No {model.IPNo} already exists!";
+                        TempData["error"] = $"IP Phone No {model.IPNo} Already Exists!";
                     }
                    
                 }

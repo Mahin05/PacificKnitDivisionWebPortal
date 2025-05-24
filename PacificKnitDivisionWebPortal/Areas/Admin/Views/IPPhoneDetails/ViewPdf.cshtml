@@ -44,6 +44,14 @@
         padding: 4px;
         text-align: center;
     }
+/* body {
+      background-color: lightblue;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    } */
+    th {
+      background-color: #ffb938 !important;
+    }
 
     .pdf-page-break {
         page-break-before: always !important;
@@ -69,9 +77,14 @@
 @* <a class="btn btn-link text-info" asp-area="admin" asp-action="Index">Go Back</a>
 <button id="download-pdf">Download PDF</button> *@
 
-<div class="main-div" style="font-size:10px">
+<div class="main-div  pdf-section" style="font-size:10px">
     <!-- Pacific Knitex Ltd. -->
     <div class="company-section pdf-section">
+        <table style="width:65%;margin-left:auto;margin-right:auto;">
+            <tr class="text-center">
+                <th style="background-color: #061640; color: white; font-size: 12px;">Pacific Knit Division IP phone Index</th>
+            </tr>
+        </table>
         <table style="width:65%;margin-left:auto;margin-right:auto;">
             <tr class="text-center">
                 <th style="background-color: #009ad9bd; color: white; font-size: 12px;">Pacific Knitex Ltd.</th>
