@@ -1,23 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using OnlineBookOrderManagementSystem.Data;
 using OnlineBookOrderManagementSystem.Repositories.IRepository;
 using OnlineBookOrderManagementSystem.Repositories.Repository;
 using PacificKnitDivisionWebPortal.Data;
 using PacificKnitDivisionWebPortal.Models;
 using PacificKnitDivisionWebPortal.Models.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class IPPhoneDetailsController : Controller
     {
         private readonly ApplicationDBContext _context;

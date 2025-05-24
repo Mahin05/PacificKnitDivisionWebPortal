@@ -1,18 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using OnlineBookOrderManagementSystem.Data;
 using OnlineBookOrderManagementSystem.Repositories.IRepository;
 using PacificKnitDivisionWebPortal.Data;
 using PacificKnitDivisionWebPortal.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class UnitController : Controller
     {
         private readonly ApplicationDBContext _context;

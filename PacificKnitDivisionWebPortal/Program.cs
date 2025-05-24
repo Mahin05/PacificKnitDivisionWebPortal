@@ -19,6 +19,12 @@ builder.Services.AddDbContext<ApplicationDBContext>(z => z.UseSqlServer(
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDBContext>().AddDefaultTokenProviders();
 
+builder.Services.ConfigureApplicationCookie(x =>
+{
+    x.LoginPath = $"/Identity/Account/Login";
+    x.LogoutPath = $"/Identity/Account/Logout";
+    x.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+});
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
