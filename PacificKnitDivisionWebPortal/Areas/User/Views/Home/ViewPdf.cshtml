@@ -169,12 +169,12 @@
              //=======================PKD load data STARTS=======================================
              function LoadPKDData(){
              $.ajax({
-                url: '/Admin/IPPhoneDetails/GetIPPhoneOfPKD',
+                url: '/User/Home/GetIPPhoneOfPKD',
                 method: 'GET',
                 dataType: 'json',
                 success: function (response) {
                     if (response) {
-                      console.log(response);
+                      // console.log(response);
                       //========================== pkl part starts================================
                       var dataArrayPKL = response.table1;
                         let groupedDataPKL = {}; // Group by name (e.g., HR, ICT)

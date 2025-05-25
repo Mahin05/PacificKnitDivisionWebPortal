@@ -44,7 +44,7 @@
             success: function (response) {
                 //console.log("responsedata", response);
                 if (response.data) {
-                    console.log(response.data);
+                    // console.log(response.data);
                            var dataList = response.data;
 
                     dataList.forEach(function(data) {
@@ -75,7 +75,7 @@
 
                         if (data.fileType === "Info") {
 
-                            console.log("data",data.name);
+                            // console.log("data",data.name);
                             if(data.name=="IP Phone Index"){
                                  var infoParentDiv = document.getElementById("info-div");
 
@@ -90,7 +90,7 @@
                                                 <a href="${data.fileUrl}" download class="btn text-white mt-2" style="background-color:#061640;font-size: 12px;">
                                                     <i class="bi bi-cloud-arrow-down"></i> Download
                                                 </a>
-                                                <a target="_blank" href="${data.fileUrl}" class="btn text-white mt-2" style="background-color:#061640;font-size: 12px;">
+                                                <a target="_blank" href="/User/Home/ViewPdf" class="btn text-white mt-2" style="background-color:#061640;font-size: 12px;">
                                                     <i class="bi bi-eye"></i> View
                                                 </a>
                                             </td>

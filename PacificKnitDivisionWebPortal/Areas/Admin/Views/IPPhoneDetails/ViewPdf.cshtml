@@ -174,7 +174,7 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response) {
-                      console.log(response);
+                      // console.log(response);
                       //========================== pkl part starts================================
                       var dataArrayPKL = response.table1;
                         let groupedDataPKL = {}; // Group by name (e.g., HR, ICT)
@@ -340,19 +340,19 @@
         });
 
 
-            document.getElementById("download-pdf").addEventListener("click", function () {
-          var element = document.querySelector(".main-div");
+        //     document.getElementById("download-pdf").addEventListener("click", function () {
+        //   var element = document.querySelector(".main-div");
 
-          var opt = {
-            margin:       [0.9, 0.1, 0.9, 0.1],
-            filename:     'IP Phone Index.pdf',
-            image:        { type: 'jpeg', quality: 1.00 },
-            html2canvas:  { scale: 4, useCORS: true },
-            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-          };
+        //   var opt = {
+        //     margin:       [0.9, 0.1, 0.9, 0.1],
+        //     filename:     'IP Phone Index.pdf',
+        //     image:        { type: 'jpeg', quality: 1.00 },
+        //     html2canvas:  { scale: 4, useCORS: true },
+        //     jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        //   };
 
-          html2pdf().set(opt).from(element).save();
-        });
+        //   html2pdf().set(opt).from(element).save();
+        // });
 
 
     </script>

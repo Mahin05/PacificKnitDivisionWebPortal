@@ -7,15 +7,15 @@
     <h1 class="text-center">IP Phone Details List</h1>
     <div class="row mb-3">
         <div class="col-md-6 mt-2">
-            <div class="float-end">
-                <select id="dept" class="w-25">
+            <div class="">
+                <button id="download-pdf">Download PDF</button>
+                @* <select id="dept" class="w-25">
                     <option value="0">All Department</option>
-                </select>
+                </select> *@
                 <select id="unit">
                     <option value="0">All Unit</option>
                 </select>
                 <input id="SearchText" /> <button id="Search" class="btn-primary text-bg-info">Search</button>
-
             </div>
         </div>
     </div>
@@ -27,7 +27,12 @@
 
 
 @section Scripts {
+    @* ========pdf export cdn============ *@
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.20/jspdf.plugin.autotable.min.js"></script>
     <script type="text/javascript">
+        var table;
          $(document).ready(function () {
 
              //first load data=======================================
@@ -44,15 +49,15 @@
                             }));
                         });
                     }
-                    if(response.dept){
-                        //console.log("dept",response.dept);
-                           $.each(response.dept, function (i, dept) {
-                            $('#dept').append($('<option>', {
-                                value: dept.id,
-                                text: dept.name
-                            }));
-                        });
-                    }
+                    // if(response.dept){
+                    //     //console.log("dept",response.dept);
+                    //        $.each(response.dept, function (i, dept) {
+                    //         $('#dept').append($('<option>', {
+                    //             value: dept.id,
+                    //             text: dept.name
+                    //         }));
+                    //     });
+                    // }
                     if (response.data) {
                         //console.log(response.data);
                         //Build Tabulator
@@ -88,7 +93,7 @@
             var value = $("#SearchText").val();
             var Dept = $("#dept").val();
             var Unit = $("#unit option:selected").val();
-            console.log("Unit",Unit);
+            // console.log("Unit",Unit);
             //console.log(value);
 
             $.ajax({
@@ -142,7 +147,7 @@
              var value = $("#SearchText").val();
             var Dept = $("#dept").val();
             var Unit = $("#unit option:selected").text();
-            console.log("Unit",Unit);
+            // console.log("Unit",Unit);
             //console.log(value);
 
             $.ajax({
@@ -184,6 +189,16 @@
               }
             });
         });
+
+
+        // export toolbar pdf starts==========================
+                document.getElementById("download-pdf").addEventListener("click", function(){
+            table.download("pdf", "IP Phone Index.pdf", {
+                orientation:"portrait", //set page orientation to portrait
+                title:"IP Phone Index", //add title to report
+            });
+        });
+        // export toolbar pdf ends============================
 
     </script>
 }

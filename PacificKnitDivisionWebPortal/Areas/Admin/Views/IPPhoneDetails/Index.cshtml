@@ -6,16 +6,17 @@
 <div class="main-div">
     <h1 class="text-center">IP Phone Details List</h1>
     <div class="row mb-3">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <p>
                 <a class="btn btn-primary" asp-action="Upsert">Create New</a> <a class="btn btn-secondary" asp-action="ViewPdf">View</a>
             </p>
         </div>
-        <div class="col-md-6 mt-2">
+        <div class="col-md-8 mt-2">
             <div class="float-end">
-                <select id="dept" class="w-25">
+                <button id="download-pdf">Download PDF</button>
+                @* <select id="dept" class="w-25">
                     <option value="0">All Department</option>
-                </select>
+                </select> *@
                 <select id="unit">
                     <option value="0">All Unit</option>
                 </select>
@@ -32,7 +33,12 @@
 
 
 @section Scripts {
+    @* ========pdf export cdn============ *@
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.20/jspdf.plugin.autotable.min.js"></script>
     <script type="text/javascript">
+        var table;
          $(document).ready(function () {
 
              //first load data=======================================
@@ -49,15 +55,30 @@
                             }));
                         });
                     }
-                    if(response.dept){
-                        //console.log("dept",response.dept);
-                           $.each(response.dept, function (i, dept) {
-                            $('#dept').append($('<option>', {
-                                value: dept.id,
-                                text: dept.name
-                            }));
-                        });
-                    }
+                    // if(response.dept){
+                    //        $.each(response.dept, function (i, dept) {
+                    //     console.log("dept",dept);
+                    //     if(dept.unit.name=="PKL"){
+                    //         $('#dept').append($('<option>', {
+                    //             value: dept.id,
+                    //             text: dept.name
+                    //         }));
+                    //     }
+                    //     if(dept.unit.name=="PCL1"){
+                    //         $('#dept').append($('<option>', {
+                    //             value: dept.id,
+                    //             text: dept.name
+                    //         }));
+                    //     }
+                    //     if(dept.unit.name=="PCL2"){
+                    //         $('#dept').append($('<option>', {
+                    //             value: dept.id,
+                    //             text: dept.name
+                    //         }));
+                    //     }
+                           
+                    //     });
+                    // }
                     if (response.data) {
                         //console.log(response.data);
                         //Build Tabulator
@@ -95,109 +116,12 @@
                     console.error("An error occurred: " + error);
                 }
             });
-
-        var table;
-        //drop for department===================================================
-        // $("#dept").on("change", function () {
-        //     var value = $(this).val();
-        //     $.ajax({
-        //         url: '/Admin/IPPhoneDetails/GetIPDetailsByDepartment?value=' + value,
-        //         method: 'GET',
-        //         dataType: 'json',
-        //         success: function (response) {
-        //             //console.log("responsedata", response);
-        //             if (response.data) {
-        //                 //console.log(response.data);
-        //                 //Build Tabulator
-        //                     table = new Tabulator("#ipphonedetails-table", {
-        //                     height: "800px",
-        //                     data: response.data,
-        //                     layout: "fitColumns",
-        //                     placeholder: "No Data Set",
-        //                     pagination: "local",
-        //                     paginationSize: 20,
-        //                     paginationSizeSelector: [3, 6, 8, 10],
-        //                     movableColumns: true,
-        //                     paginationCounter: "rows",
-        //                     columns: [
-        //                         { title: "Department", field: "department.name", sorter: "string"/* , width: 200  */},
-        //                         { title: "IP No.", field: "ipNo", sorter: "string"/* , width: 200  */},
-        //                         { title: "Display Name", field: "displayName", sorter: "string"/* , width: 200  */},
-        //                         { title: "Unit", field: "unit", sorter: "string"/* , width: 200  */},
-        //                         {
-        //                             title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
-        //                                 var id = cell.getRow().getData().id;
-        //                                 return `<a href='/Admin/IPPhoneDetails/Upsert/${id}' class='btn btn-sm btn-success'><i class="bi bi-pen-fill"></i></a> <a class='btn btn-sm btn-danger delete-button' data-id='${id}'><i class="bi bi-trash-fill"></i></a>
-
-        //                                 `;
-        //                             }
-        //                         }
-        //                     ],
-        //                 });
-        //             }
-        //             else {
-        //                 console.log("No data found.");
-        //             }
-        //         },
-        //         error: function (xhr, status, error) {
-        //             console.error("An error occurred: " + error);
-        //         }
-        //     });
-        // });
-        //drop for unit===================================================
-        // $("#unit").on("change", function () {
-        //     var value = $("#unit option:selected").text();
-        //     $.ajax({
-        //         url: '/Admin/IPPhoneDetails/GetIPDetailsByUnit?value=' + value,
-        //         method: 'GET',
-        //         dataType: 'json',
-        //         success: function (response) {
-        //             //console.log("responsedata", response);
-        //             if (response.data) {
-        //                 //console.log(response.data);
-        //                 //Build Tabulator
-        //                     table = new Tabulator("#ipphonedetails-table", {
-        //                     height: "800px",
-        //                     data: response.data,
-        //                     layout: "fitColumns",
-        //                     placeholder: "No Data Set",
-        //                     pagination: "local",
-        //                     paginationSize: 20,
-        //                     paginationSizeSelector: [3, 6, 8, 10],
-        //                     movableColumns: true,
-        //                     paginationCounter: "rows",
-        //                     columns: [
-        //                         { title: "Department", field: "department.name", sorter: "string"/* , width: 200  */},
-        //                         { title: "IP No.", field: "ipNo", sorter: "string"/* , width: 200  */},
-        //                         { title: "Display Name", field: "displayName", sorter: "string"/* , width: 200  */},
-        //                         { title: "Unit", field: "unit", sorter: "string"/* , width: 200  */},
-        //                         {
-        //                             title: "Actions", field: "", sorter: "string"/* , width: 200 */, formatter: function (cell, formatterParams, onRendered) {
-        //                                 var id = cell.getRow().getData().id;
-        //                                 return `<a href='/Admin/IPPhoneDetails/Upsert/${id}' class='btn btn-sm btn-success'><i class="bi bi-pen-fill"></i></a> <a class='btn btn-sm btn-danger delete-button' data-id='${id}'><i class="bi bi-trash-fill"></i></a>
-
-        //                                 `;
-        //                             }
-        //                         }
-        //                     ],
-        //                 });
-        //             }
-        //             else {
-        //                 console.log("No data found.");
-        //             }
-        //         },
-        //         error: function (xhr, status, error) {
-        //             console.error("An error occurred: " + error);
-        //         }
-        //     });
-        // });
-
         //search===================================================
         $("#Search").on("click", function () {
             var value = $("#SearchText").val();
             var Dept = $("#dept").val();
             var Unit = $("#unit option:selected").val();
-            console.log("Unit",Unit);
+            // console.log("Unit",Unit);
             //console.log(value);
 
             $.ajax({
@@ -207,7 +131,7 @@
                 success: function (response) {
                     //console.log("responsedata", response);
                     if (response.data) {
-                        console.log(response.data);
+                        // console.log(response.data);
                         //Build Tabulator
                             table = new Tabulator("#ipphonedetails-table", {
                             height: "800px",
@@ -259,7 +183,7 @@
              var value = $("#SearchText").val();
             var Dept = $("#dept").val();
             var Unit = $("#unit option:selected").text();
-            console.log("Unit",Unit);
+            // console.log("Unit",Unit);
             //console.log(value);
 
             $.ajax({
@@ -364,5 +288,13 @@
             });
         });
 
+        // export toolbar pdf starts==========================
+                document.getElementById("download-pdf").addEventListener("click", function(){
+            table.download("pdf", "IP Phone Index.pdf", {
+                orientation:"portrait", //set page orientation to portrait
+                title:"IP Phone Index", //add title to report
+            });
+        });
+        // export toolbar pdf ends============================
     </script>
 }
