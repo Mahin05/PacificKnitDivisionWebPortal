@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35825.156 d17.13
+VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacificKnitDivisionWebPortal", "PacificKnitDivisionWebPortal\PacificKnitDivisionWebPortal.csproj", "{137ECB8E-2F2C-4C42-BE7B-E9C17D00E830}"
 EndProject

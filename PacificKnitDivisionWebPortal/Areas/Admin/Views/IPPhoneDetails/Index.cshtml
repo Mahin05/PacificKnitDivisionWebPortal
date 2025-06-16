@@ -4,24 +4,34 @@
     ViewData["Title"] = "Index";
 }
 <div class="main-div">
-    <h1 class="text-center">IP Phone Details List</h1>
+    <h2 class="text-center">IP Phone Index</h2>
     <div class="row mb-3">
         <div class="col-md-4">
             <p>
-                <a class="btn btn-primary" asp-action="Upsert">Create New</a> <a class="btn btn-secondary" asp-action="ViewPdf">View</a>
+                <a class="btn" style="border: 1px solid #00000047;" asp-action="Upsert"><i class="bi bi-plus-square me-1"></i>Create New</a> <a style="border: 1px solid #00000047;" class="btn" asp-action="ViewPdf"><i class="bi bi-eye me-1"></i>View</a>
             </p>
         </div>
-        <div class="col-md-8 mt-2">
+        <div class="col-md-4 mt-2">
             <div class="float-end">
-                <button id="download-pdf">Download PDF</button>
-                @* <select id="dept" class="w-25">
-                    <option value="0">All Department</option>
-                </select> *@
-                <select id="unit">
+                <div class="input-group" style="max-width: 400px;">
+                    <select id="unit" class="p-1 border rounded" style="cursor:pointer">
+                        <option value="0">All Unit</option>
+                    </select>
+                    <input id="SearchText" type="text" class="form-control" placeholder="Search..." aria-label="Search">
+                    <button id="Search" class="btn border" type="button">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+                @* <select id="unit">
                     <option value="0">All Unit</option>
                 </select>
-                <input id="SearchText" /> <button id="Search" class="btn-primary text-bg-info">Search</button>
+                <input id="SearchText" /> <button id="Search" class="btn-primary text-bg-info">Search</button> *@
 
+            </div>
+        </div>
+        <div class="col-md-4 mt-2">
+            <div class="float-end">
+                <button id="download-pdf" style="border: 1px solid #00000047;" class="rounded py-1"><i class="bi bi-cloud-arrow-down me-1"></i>Download PDF</button>
             </div>
         </div>
     </div>
@@ -182,12 +192,12 @@
              //alert("asasa"); 
              var value = $("#SearchText").val();
             var Dept = $("#dept").val();
-            var Unit = $("#unit option:selected").text();
+            var Unit = $("#unit option:selected").val();
             // console.log("Unit",Unit);
             //console.log(value);
 
             $.ajax({
-                url: '/Admin/IPPhoneDetails/GetAllSearch?value='+value+'&Dept='+Dept+'&unit='+Unit,
+                url: '/Admin/IPPhoneDetails/GetAllSearch?value='+value+'&Dept='+Dept+'&Unit='+Unit,
                 method: 'GET',
                 dataType: 'json',
                 success: function (response) {

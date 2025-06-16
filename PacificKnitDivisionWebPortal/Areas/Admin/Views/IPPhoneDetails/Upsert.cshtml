@@ -3,6 +3,13 @@
 @{
     ViewData["Title"] = "Create";
 }
+<style>
+    
+  .readonly-select {
+    pointer-events: none;
+    background-color: #f2f2f2;
+  }
+</style>
 <div class="main-div">
     <h4 class="text-center">Create</h4>
     <hr />
@@ -11,30 +18,72 @@
             <form asp-action="Upsert">
                 <input asp-for="Id" hidden />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group fw-bold mb-2">
-                    <label asp-for="IPNo" class="control-label"></label>
-                    <input asp-for="IPNo" class="form-control" />
-                    <span asp-validation-for="IPNo" class="text-danger"></span>
-                </div>
+                @if (Model.Id != 0)
+                {
+                    <div class="form-group fw-bold mb-2">
+                        <label asp-for="IPNo" class="control-label"></label>
+                        <input readonly asp-for="IPNo" class="form-control" />
+                        <span asp-validation-for="IPNo" class="text-danger"></span>
+                    </div>
+
+                }
+                else
+                { 
+                    <div class="form-group fw-bold mb-2">
+                        <label asp-for="IPNo" class="control-label"></label>
+                        <input asp-for="IPNo" class="form-control" />
+                        <span asp-validation-for="IPNo" class="text-danger"></span>
+                    </div>
+                }
                 <div class="form-group fw-bold mb-2">
                     <label asp-for="DisplayName" class="control-label"></label>
                     <input asp-for="DisplayName" class="form-control" />
                     <span asp-validation-for="DisplayName" class="text-danger"></span>
                 </div>
-                <div class="form-group fw-bold mb-2">
+                @if (Model.Id != 0)
+                {
+                    <div class="form-group fw-bold mb-2">
+                    <label asp-for="UnitId" class="control-label"></label><br />
+                    <select asp-for="UnitId" asp-items="ViewBag.UnitList" id="Unit" class="readonly-select">
+                        <option selected disabled>--Select Unit--</option>
+                    </select>
+                    <span asp-validation-for="UnitId" class="text-danger"></span>
+                    <input class="d-none" asp-for="UnitId" name="dropdown">
+                </div>
+                }
+                else
+                {
+                    <div class="form-group fw-bold mb-2">
                     <label asp-for="UnitId" class="control-label"></label><br />
                     <select asp-for="UnitId" asp-items="ViewBag.UnitList" id="Unit">
                         <option selected disabled>--Select Unit--</option>
                     </select>
                     <span asp-validation-for="UnitId" class="text-danger"></span>
                 </div>
-                <div class="form-group fw-bold mb-2">
+                }
+                
+                @if (Model.Id != 0)
+                {
+                    <div class="form-group fw-bold mb-2">
+                    <label asp-for="DeptId" class="control-label"></label>
+                    <select asp-for="DeptId" class="form-control readonly-select" asp-items="ViewBag.DepartmentList" id="Dept">
+                        <option disabled selected>--Select Category--</option>
+                    </select>
+                    <input class="d-none" asp-for="DeptId" name="dropdown">
+                    <span asp-validation-for="DeptId" class="text-danger"></span>
+                </div>
+                }
+                else
+                {
+                    <div class="form-group fw-bold mb-2">
                     <label asp-for="DeptId" class="control-label"></label>
                     <select asp-for="DeptId" class="form-control" asp-items="ViewBag.DepartmentList" id="Dept">
                         <option disabled selected>--Select Category--</option>
                     </select>
                     <span asp-validation-for="DeptId" class="text-danger"></span>
                 </div>
+                }
+                
                 <div class="form-group fw-bold mb-2">
                     @if (Model.Id != 0)
                     {

@@ -5,19 +5,28 @@
 }
 <div class="main-div">
 
-    <h1 class="text-center">Department List</h1>
+    <h2 class="text-center">Department</h2>
     <div class="row">
         <div class="col-lg-6">
             <p>
-                <a class="btn btn-primary" asp-action="Upsert">Create New</a>
+                <a class="btn" style="border: 1px solid #00000047;" asp-action="Upsert"><i class="bi bi-plus-square me-1"></i>Create New</a>
             </p>
         </div>
         <div class="col-lg-6">
             <div class="float-end">
-                <select id="unit">
+                <div class="input-group" style="max-width: 400px;">
+                    <select id="unit" class="p-1 border rounded" style="cursor:pointer">
+                        <option value="0">All Unit</option>
+                    </select>
+                    <input id="SearchText" type="text" class="form-control" placeholder="Search..." aria-label="Search">
+                    <button id="Search" class="btn border" type="button">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+               @*  <select id="unit">
                     <option value="0">All Unit</option>
                 </select>
-                <input id="SearchText" /> <button id="Search" class="btn-primary text-bg-info">Search</button>
+                <input id="SearchText" /> <button id="Search" class="btn-primary text-bg-info">Search</button> *@
             </div>
         </div>
     </div>
@@ -49,13 +58,13 @@
                         //console.log(response.data.result);
                         //Build Tabulator
                             table = new Tabulator("#department-table", {
-                            height: "800px",
+                            height: "450px",
                             data: response.data,
                             layout: "fitColumns",
                             placeholder: "No Data Set",
                             pagination: "local",
-                            paginationSize: 20,
-                            paginationSizeSelector: [3, 6, 8, 10,20],
+                            paginationSize: 15,
+                            paginationSizeSelector: [3, 6, 8, 10,15,25,30],
                             movableColumns: true,
                             paginationCounter: "rows",
                             columns: [
@@ -147,13 +156,13 @@
                         console.log(response.data.result);
                         //Build Tabulator
                             table = new Tabulator("#department-table", {
-                            height: "800px",
+                            height: "450px",
                             data: response.data.result,
                             layout: "fitColumns",
                             placeholder: "No Data Set",
                             pagination: "local",
-                            paginationSize: 20,
-                            paginationSizeSelector: [3, 6, 8, 10,20],
+                            paginationSize: 15,
+                            paginationSizeSelector: [3, 6, 8, 10,15,25,30],
                             movableColumns: true,
                             paginationCounter: "rows",
                             columns: [
@@ -199,13 +208,13 @@
                         console.log(response.data.result);
                         //Build Tabulator
                             table = new Tabulator("#department-table", {
-                            height: "800px",
+                            height: "450px",
                             data: response.data.result,
                             layout: "fitColumns",
                             placeholder: "No Data Set",
                             pagination: "local",
-                            paginationSize: 20,
-                            paginationSizeSelector: [3, 6, 8, 10,20],
+                            paginationSize: 15,
+                            paginationSizeSelector: [3, 6, 8, 10,15,25,30],
                             movableColumns: true,
                             paginationCounter: "rows",
                             columns: [

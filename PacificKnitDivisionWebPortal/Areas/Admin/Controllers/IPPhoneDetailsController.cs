@@ -39,7 +39,7 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var list = unitOfWork.iPPhoneDetails.GetAll().Include(i => i.Department);
+            var list = unitOfWork.iPPhoneDetails.GetAll().Include(i => i.Department).OrderBy(x=>x.IPNo);
             return View(await list.ToListAsync());
         }
 
@@ -88,6 +88,14 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                Value = x.Id.ToString()
            });
             ViewBag.UnitList = UnitList;
+
+            IEnumerable<SelectListItem> DepartmentList = (unitOfWork.department.GetAll())
+           .Select(x => new SelectListItem
+           {
+               Text = x.Name,
+               Value = x.Id.ToString()
+           });
+            ViewBag.DepartmentList = DepartmentList;
 
 
 
@@ -149,16 +157,16 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                 }
                 else
                 {
-                    var IPno = unitOfWork.iPPhoneDetails.GetAll().FirstOrDefault(x => x.IPNo == model.IPNo);
-                    if (IPno == null)
-                    {
-                        TempData["success"] = "IP Phone Details Updated Successfully!";
-                        unitOfWork.iPPhoneDetails.Update(model);
-                    }
-                    else
-                    {
-                        TempData["error"] = $"IP Phone No {model.IPNo} Already Exists!";
-                    }
+                    //var IPno = unitOfWork.iPPhoneDetails.GetAll().FirstOrDefault(x => x.IPNo == model.IPNo);
+                    //if (IPno == null)
+                    //{
+                    TempData["success"] = "IP Phone Details Updated Successfully!";
+                    await unitOfWork.iPPhoneDetails.Update(model);
+                    //}
+                    //else
+                    //{
+                    //    TempData["error"] = $"IP Phone No {model.IPNo} Already Exists!";
+                    //}
                    
                 }
                 unitOfWork.Save();

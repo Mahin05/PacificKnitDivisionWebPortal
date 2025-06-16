@@ -3,19 +3,59 @@
 @{
     ViewData["Title"] = "Index";
 }
+<style>
+    form.example input[type=text] {
+        padding: 10px;
+        font-size: 17px;
+        border: 1px solid grey;
+        float: left;
+        width: 80%;
+        background: #f1f1f1;
+    }
+
+    form.example button {
+        float: left;
+        width: 20%;
+        padding: 10px;
+        background: #2196F3;
+        color: white;
+        font-size: 17px;
+        border: 1px solid grey;
+        border-left: none;
+        cursor: pointer;
+    }
+
+        form.example button:hover {
+            background: #0b7dda;
+        }
+
+    form.example::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <div class="main-div">
-    <h1 class="text-center">IP Phone Details List</h1>
+    <h2 class="text-center">IP Phone Index</h2>
     <div class="row mb-3">
         <div class="col-md-6 mt-2">
-            <div class="">
-                <button id="download-pdf">Download PDF</button>
                 @* <select id="dept" class="w-25">
                     <option value="0">All Department</option>
                 </select> *@
-                <select id="unit">
+            <div class="input-group" style="max-width: 400px;">
+                <select id="unit" class="p-1 border rounded" style="cursor:pointer">
                     <option value="0">All Unit</option>
                 </select>
-                <input id="SearchText" /> <button id="Search" class="btn-primary text-bg-info">Search</button>
+                    <input id="SearchText" type="text" class="form-control" placeholder="Search..." aria-label="Search">
+                    <button id="Search" class="btn border" type="button">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+        </div>
+        <div class="col-md-6 mt-2">
+            <div class="float-end">
+                <button id="download-pdf" style="border: 1px solid #00000047;" class="rounded py-1"><i class="bi bi-cloud-arrow-down me-1"></i>Download PDF</button>
             </div>
         </div>
     </div>
@@ -62,13 +102,13 @@
                         //console.log(response.data);
                         //Build Tabulator
                             table = new Tabulator("#ipphonedetails-table", {
-                            height: "800px",
+                            height: "450px",
                             data: response.data,
                             layout: "fitColumns",
                             placeholder: "No Data Set",
                             pagination: "local",
-                            paginationSize: 26,
-                            paginationSizeSelector: [3, 6, 8, 10,20,26],
+                            paginationSize: 15,
+                            paginationSizeSelector: [3, 6, 8, 10,15,25,30],
                             movableColumns: true,
                             paginationCounter: "rows",
                             columns: [
@@ -106,13 +146,13 @@
                         console.log(response.data);
                         //Build Tabulator
                             table = new Tabulator("#ipphonedetails-table", {
-                            height: "800px",
+                            height: "450px",
                             data: response.data,
                             layout: "fitColumns",
                             placeholder: "No Data Set",
                             pagination: "local",
-                            paginationSize: 26,
-                            paginationSizeSelector: [3, 6, 8, 10,20,26],
+                            paginationSize: 15,
+                            paginationSizeSelector: [3, 6, 8, 10,15,25,30],
                             movableColumns: true,
                             paginationCounter: "rows",
                             columns: [
@@ -146,12 +186,12 @@
              //alert("asasa");
              var value = $("#SearchText").val();
             var Dept = $("#dept").val();
-            var Unit = $("#unit option:selected").text();
+            var Unit = $("#unit option:selected").val();
             // console.log("Unit",Unit);
             //console.log(value);
 
             $.ajax({
-                url: '/User/Home/GetAllSearch?value='+value+'&Dept='+Dept+'&unit='+Unit,
+                url: '/User/Home/GetAllSearch?value='+value+'&Dept='+Dept+'&Unit='+Unit,
                 method: 'GET',
                 dataType: 'json',
                 success: function (response) {
@@ -160,13 +200,13 @@
                         //console.log(response.data);
                         //Build Tabulator
                             table = new Tabulator("#ipphonedetails-table", {
-                            height: "800px",
+                            height: "450px",
                             data: response.data,
                             layout: "fitColumns",
                             placeholder: "No Data Set",
                             pagination: "local",
-                            paginationSize: 26,
-                            paginationSizeSelector: [3, 6, 8, 10,20,26],
+                            paginationSize: 15,
+                            paginationSizeSelector: [3, 6, 8, 10,15,25,30],
                             movableColumns: true,
                             paginationCounter: "rows",
                             columns: [
