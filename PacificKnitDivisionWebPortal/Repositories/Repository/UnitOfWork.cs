@@ -9,6 +9,7 @@ namespace OnlineBookOrderManagementSystem.Repositories.Repository
         //public IApplicationUserReposiory applicationUser { get; private set; }
         public IDocumentRepository Document { get; private set; }
         public IDepartmentRepository department { get; private set; }
+        public IDesignationRepository designation { get; private set; }
         public IIPPhoneDetailsRepository iPPhoneDetails { get; private set; }
         public IUnitRepository unit { get; private set; }
 
@@ -18,6 +19,7 @@ namespace OnlineBookOrderManagementSystem.Repositories.Repository
             //applicationUser = new ApplicationUserReposiory(_db);
             Document= new DocumentRepository(_db);
             department= new DepartmentRepository(_db);
+            designation = new DesignationRepository(_db);
             iPPhoneDetails = new IPPhoneDetailsRepository(_db);
             unit = new UnitRepository(_db);
         }
