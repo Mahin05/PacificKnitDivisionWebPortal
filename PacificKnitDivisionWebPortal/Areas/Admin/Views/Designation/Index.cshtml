@@ -34,7 +34,7 @@
     <script type="text/javascript">
                  //first load data=======================================
              $.ajax({
-                url: '/Admin/Designantion/GetAllDepartment',
+                url: '/Admin/Designation/GetAllDesignation',
                 method: 'GET',
                 dataType: 'json',
                 success: function (response) {
@@ -62,6 +62,7 @@
                             paginationCounter: "rows",
                             columns: [
                                 { title: "Designation Name", field: "name", sorter: "string"},
+                                { title: "Display No", field: "displayNo", sorter: "string"},
                                 {
                                     title: "Actions", field: "", sorter: "string", formatter: function (cell, formatterParams, onRendered) {
                                         var id = cell.getRow().getData().id;
@@ -139,7 +140,7 @@
             //console.log(value);
             var Unit = $("#unit option:selected").val();
                 $.ajax({
-                url: '/Admin/Designation/GetAllSearch?value='+value+'&unit='+Unit,
+                url: '/Admin/Designation/GetAllSearch?value='+value,
                 method: 'GET',
                 dataType: 'json',
                 success: function (response) {
@@ -158,6 +159,7 @@
                             paginationCounter: "rows",
                             columns: [
                                 { title: "Designation Name", field: "name", sorter: "string"},
+                                { title: "Display No", field: "displayNo", sorter: "string"},
                                 {
                                     title: "Actions", field: "", sorter: "string", formatter: function (cell, formatterParams, onRendered) {
                                         var id = cell.getRow().getData().id;
@@ -187,7 +189,7 @@
                        //alert("sas");
                        var value = $("#SearchText").val();
                 $.ajax({
-                url: '/Admin/Department/GetAllSearch?value='+value,
+                url: '/Admin/Designation/GetAllSearch?value='+value,
                 method: 'GET',
                 dataType: 'json',
                 success: function (response) {
@@ -206,6 +208,7 @@
                             paginationCounter: "rows",
                             columns: [
                                 { title: "Designation Name", field: "name", sorter: "string"},
+                                { title: "Display No", field: "displayNo", sorter: "string"},
                                 {
                                     title: "Actions", field: "", sorter: "string", formatter: function (cell, formatterParams, onRendered) {
                                         var id = cell.getRow().getData().id;

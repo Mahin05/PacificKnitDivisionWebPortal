@@ -39,6 +39,16 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
         {
             if (Id == null)
             {
+                var displayNo = unitOfWork.designation.GetAll().OrderByDescending(x=>x.DisplayNo).FirstOrDefault();
+                if (displayNo == null)
+                {
+                    ViewBag.DisplayNo = 0;
+                }
+                else
+                {
+                    ViewBag.DisplayNo = displayNo.DisplayNo+1;
+                }
+                    
                 return View(new Designation());
             }
             else
@@ -71,7 +81,7 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                         TempData["success"] = "Department Created Successfully!";
 
                         // Call stored procedure to insert
-                        await db.Database.ExecuteSqlRawAsync("EXEC CreateAndUpdateDepartment @p0,@p1,@p2", model.Id, model.Name,model.DisplayNo);
+                        await db.Database.ExecuteSqlRawAsync("EXEC CreateAndUpdateDesignation @p0,@p1,@p2", model.Id, model.Name,model.DisplayNo);
                     }
                     else
                     {
@@ -86,7 +96,7 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
                     {
 
                         TempData["success"] = "Designation Updated Successfully!";
-                        await db.Database.ExecuteSqlRawAsync("EXEC CreateAndUpdateDepartment @p0,@p1,@p2", model.Id, model.Name,model.DisplayNo);
+                        await db.Database.ExecuteSqlRawAsync("EXEC CreateAndUpdateDesignation @p0,@p1,@p2", model.Id, model.Name,model.DisplayNo);
 
                         //unitOfWork.department.Update(department);
                         //unitOfWork.Save();
@@ -180,11 +190,10 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
             return Json(new { unit = unitList });
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllDepartment()
+        public async Task<IActionResult> GetAllDesignation()
         {
-            var departmentList = await unitOfWork.department.GetAll().OrderBy(x => x.UnitId).ThenBy(x => x.DisplayNo).ToListAsync();
-            var unitList =await unitOfWork.unit.GetAll().ToListAsync();
-            return Json(new { data = departmentList, unit = unitList });
+            var designationList = await unitOfWork.designation.GetAll().OrderBy(x => x.DisplayNo).ToListAsync();
+            return Json(new { data = designationList});
         }
         [HttpGet]
         public IActionResult GetDisplayNo(int Id)
