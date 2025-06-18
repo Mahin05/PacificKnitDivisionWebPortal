@@ -7,7 +7,10 @@ namespace PacificKnitDivisionWebPortal.Models
     {
         [Key]
         public int Id { get; set; }
-        public int SLNo { get; set; }
+        [Required]
+        public string Name { get; set; }
+        [Required]
+        public string Email { get; set; }
 
         [ForeignKey("Designation")]
         [Display(Name = "Designation")]
@@ -18,7 +21,11 @@ namespace PacificKnitDivisionWebPortal.Models
         [Display(Name = "Department")]
         public int DeptId { get; set; }
         public Department? Department { get; set; }
-        [Required]
-        public string Email { get; set; }
+
+
+        [ForeignKey("Unit")]
+        [Display(Name = "Unit")]
+        public int UnitId { get; set; }
+        public Unit? Unit { get; set; }
     }
 }

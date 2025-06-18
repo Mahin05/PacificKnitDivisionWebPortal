@@ -1,0 +1,359 @@
+﻿@{
+    ViewBag.HideLayoutParts = true;
+}
+<style>
+	table, th, td {
+		border: 1px solid black;
+	}
+/* 
+    tr, td, th {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    /* Add a forced page break before each new unit (e.g., Casuals Unit-1/2) */
+    .pdf-page-break {
+        page-break-before: always !important;
+        break-before: page !important;
+    }
+
+    /* Make sure each section stays intact */
+    .pdf-section {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+    .font-size{
+        font-size:11px;
+    }
+    @@media print {
+        body
+
+    {
+        margin: 0;
+        padding: 0;
+        font-size: 10px;
+    }
+
+        th, td, #pkd {
+            -webkit-print-color-adjust: exact; /* For Safari, Chrome */
+            print-color-adjust: exact; /* For Firefox, Edge */
+        }
+    table {
+        width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #000;
+        padding: 4px;
+        text-align: center;
+    }
+
+    .pdf-page-break {
+        page-break-before: always !important;
+        break-before: page !important;
+    }
+
+    .pdf-section {
+        page-break-inside: avoid ;
+        break-inside: avoid !important;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+        tbody.no-break {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+    /* Hide buttons or UI elements in print */
+    #download-pdf, .no-print {
+        display: none !important;
+    }
+
+    }
+</style>
+@* <a class="btn btn-link text-info" asp-area="admin" asp-action="Index">Go Back</a>
+<button id="download-pdf">Download PDF</button> *@
+
+<div class="main-div  pdf-section" style="font-size:10px">
+    <!-- Pacific Knitex Ltd. -->
+    <div class="company-section pdf-section">
+        <table style="width:65%;margin-left:auto;margin-right:auto;">
+            <tr class="text-center">
+                <th style="background-color: #061640; color: white; font-size: 15px;" id="pkd">Pacific Knit Division IP phone Index</th>
+            </tr>
+        </table>
+        <table style="width:65%;margin-left:auto;margin-right:auto;">
+            <tr class="text-center">
+                <th style="background-color: #009ad9bd; color: white; font-size: 13px;">Pacific Knitex Ltd.</th>
+            </tr>
+        </table>
+        <table style="width:65%;margin-left:auto;margin-right:auto" class="font-size" id="PKL-TABLE">
+            <thead>
+                <tr class="text-center">
+                    <th style="width:100px;background-color:#ffb938">Department</th>
+                    <th style="width:90px;background-color:#ffb938">IP No.</th>
+                    <th style="width:250px;background-color:#ffb938">Display Name</th>
+                    <th style="background-color:#ffb938;width:100px;">Unit</th>
+                </tr>
+            </thead>
+        </table>
+
+
+       @*  <table style="width:65%;margin-left:auto;margin-right:auto" class="font-size" id="PKL-DATA">
+            <tr class="text-center">
+                <th style="width:100px;background-color:#ffb938">Department</th>
+                <th style="width:90px;background-color:#ffb938">IP No.</th>
+                <th style="width:250px;background-color:#ffb938">Display Name</th>
+                <th style="background-color:#ffb938;width:100px;">Unit</th>
+            </tr>
+            <tbody id="PKL-DATA"></tbody>
+        </table> *@
+    </div>
+
+    <!-- Pacific Casuals Ltd. (Unit-1) -->
+    <div class="company-section page-break pdf-section pdf-page-break ">
+        <table style="width:65%;margin-left:auto;margin-right:auto;" class="mt-5">
+            <tr class="text-center">
+                <th style="background-color: #009ad9bd; color: white; font-size: 13px;">Pacific Casuals Ltd.(Unit-1)</th>
+            </tr>
+        </table>
+
+        <table style="width:65%;margin-left:auto;margin-right:auto" class="font-size" id="PCL1-TABLE">
+            <thead>
+                <tr class="text-center">
+                    <th style="width:100px;background-color:#ffb938">Department</th>
+                    <th style="width:90px;background-color:#ffb938">IP No.</th>
+                    <th style="width:250px;background-color:#ffb938">Display Name</th>
+                    <th style="background-color:#ffb938;width:100px;">Unit</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <!-- Pacific Casuals Ltd. (Unit-2) -->
+    <div class="company-section page-break pdf-section pdf-page-break ">
+        <table style="width:65%;margin-left:auto;margin-right:auto;" class="mt-5">
+            <tr class="text-center">
+                <th style="background-color: #009ad9bd; color: white; font-size: 13px;">Pacific Casuals Ltd.(Unit-2)</th>
+            </tr>
+        </table>
+
+        <table style="width:65%;margin-left:auto;margin-right:auto" class="font-size" id="PCL2-TABLE">
+            <thead>
+                <tr class="text-center">
+                    <th style="width:100px;background-color:#ffb938">Department</th>
+                    <th style="width:90px;background-color:#ffb938">IP No.</th>
+                    <th style="width:250px;background-color:#ffb938">Display Name</th>
+                    <th style="background-color:#ffb938;width:100px;">Unit</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+
+
+    <script type="text/javascript">
+         $(document).ready(function () {
+
+             //=======================PKD load data STARTS=======================================
+             function LoadPKDData(){
+             $.ajax({
+                url: '/Admin/IPPhoneDetails/GetIPPhoneOfPKD',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response) {
+                      // console.log(response);
+                      //========================== pkl part starts================================
+                      var dataArrayPKL = response.table1;
+                        let groupedDataPKL = {}; // Group by name (e.g., HR, ICT)
+                            dataArrayPKL.forEach(item => {
+                                if (!groupedDataPKL[item.name]) {
+                                    groupedDataPKL[item.name] = [];
+                                }
+                                groupedDataPKL[item.name].push(item);
+                            });
+
+                                    let table = document.getElementById("PKL-TABLE");
+
+        for (let name in groupedDataPKL) {
+            let group = groupedDataPKL[name];
+
+            let tbody = document.createElement('tbody');
+            tbody.classList.add("no-break");
+
+            group.forEach((item, index) => {
+                let tr = document.createElement('tr');
+
+                if (index === 0) {
+                    let tdName = `<td rowspan="${group.length}" class="text-center fw-bold">${item.name}</td>`;
+                    tr.innerHTML = `
+                        ${tdName}
+                        <td class="text-center fw-bold">${item.ipNo}</td>
+                        <td class="ps-2">${item.displayName}</td>
+                        <td class="text-center">${item.unit}</td>
+                    `;
+                } else {
+                    tr.innerHTML = `
+                        <td class="text-center fw-bold">${item.ipNo}</td>
+                        <td class="ps-2">${item.displayName}</td>
+                        <td class="text-center">${item.unit}</td>
+                    `;
+                }
+
+                tbody.appendChild(tr);
+            });
+
+            table.appendChild(tbody); // Add group as a full <tbody>
+        }
+
+                             //========================== pkl part ends================================
+
+
+
+
+
+
+                             //========================== pcl1 part starts================================
+                             var dataArrayPCL1 = response.table2;
+                        let groupedDatapcl1 = {}; // Group by name (e.g., HR, ICT)
+                            dataArrayPCL1.forEach(item => {
+                                if (!groupedDatapcl1[item.name]) {
+                                    groupedDatapcl1[item.name] = [];
+                                }
+                                groupedDatapcl1[item.name].push(item);
+                            });
+
+                                    let table2 = document.getElementById("PCL1-TABLE");
+
+        for (let name in groupedDatapcl1) {
+            let group = groupedDatapcl1[name];
+
+            let tbody = document.createElement('tbody');
+            tbody.classList.add("no-break");
+
+            group.forEach((item, index) => {
+                let tr = document.createElement('tr');
+
+                if (index === 0) {
+                    let tdName = `<td rowspan="${group.length}" class="text-center fw-bold">${item.name}</td>`;
+                    tr.innerHTML = `
+                        ${tdName}
+                        <td class="text-center fw-bold">${item.ipNo}</td>
+                        <td class="ps-2">${item.displayName}</td>
+                        <td class="text-center">${item.unit}</td>
+                    `;
+                } else {
+                    tr.innerHTML = `
+                        <td class="text-center fw-bold">${item.ipNo}</td>
+                        <td class="ps-2">${item.displayName}</td>
+                        <td class="text-center">${item.unit}</td>
+                    `;
+                }
+
+                tbody.appendChild(tr);
+            });
+
+            table2.appendChild(tbody); // Add group as a full <tbody>
+        }
+
+
+                             //========================== pcl1 part ends================================
+
+
+
+
+
+
+
+
+                             //========================== pcl2 part starts================================
+                             var dataArraypcl2 = response.table3;
+                        let groupedDatapcl2 = {}; // Group by name (e.g., HR, ICT)
+                            dataArraypcl2.forEach(item => {
+                                if (!groupedDatapcl2[item.name]) {
+                                    groupedDatapcl2[item.name] = [];
+                                }
+                                groupedDatapcl2[item.name].push(item);
+                            });
+
+                            let table3 = document.getElementById("PCL2-TABLE");
+
+        for (let name in groupedDatapcl2) {
+            let group = groupedDatapcl2[name];
+
+            let tbody = document.createElement('tbody');
+            tbody.classList.add("no-break");
+
+            group.forEach((item, index) => {
+                let tr = document.createElement('tr');
+
+                if (index === 0) {
+                    let tdName = `<td rowspan="${group.length}" class="text-center fw-bold">${item.name}</td>`;
+                    tr.innerHTML = `
+                        ${tdName}
+                        <td class="text-center fw-bold">${item.ipNo}</td>
+                        <td class="ps-2">${item.displayName}</td>
+                        <td class="text-center">${item.unit}</td>
+                    `;
+                } else {
+                    tr.innerHTML = `
+                        <td class="text-center fw-bold">${item.ipNo}</td>
+                        <td class="ps-2">${item.displayName}</td>
+                        <td class="text-center">${item.unit}</td>
+                    `;
+                }
+
+                tbody.appendChild(tr);
+            });
+
+            table3.appendChild(tbody); // Add group as a full <tbody>
+        }
+
+
+                             //========================== pcl2 part ends================================
+
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+             }
+             //=======================PKD load data ENDS=========================================
+
+             LoadPKDData();
+        });
+
+
+        //     document.getElementById("download-pdf").addEventListener("click", function () {
+        //   var element = document.querySelector(".main-div");
+
+        //   var opt = {
+        //     margin:       [0.9, 0.1, 0.9, 0.1],
+        //     filename:     'IP Phone Index.pdf',
+        //     image:        { type: 'jpeg', quality: 1.00 },
+        //     html2canvas:  { scale: 4, useCORS: true },
+        //     jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        //   };
+
+        //   html2pdf().set(opt).from(element).save();
+        // });
+
+
+    </script>
+}

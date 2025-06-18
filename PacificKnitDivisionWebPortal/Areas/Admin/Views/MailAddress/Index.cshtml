@@ -1,0 +1,287 @@
+﻿@model IEnumerable<PacificKnitDivisionWebPortal.Models.MailAddress>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="main-div">
+    <h2 class="text-center">Mail Address</h2>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <p>
+                <a class="btn" style="border: 1px solid #00000047;" asp-action="Upsert"><i class="bi bi-plus-square me-1"></i>Create New</a> <a style="border: 1px solid #00000047;" class="btn" asp-action="ViewPdf"><i class="bi bi-eye me-1"></i>View</a>
+            </p>
+        </div>
+        <div class="col-md-4 mt-2">
+            <div class="float-end">
+                <div class="input-group" style="max-width: 400px;">
+                    <select id="unit" class="p-1 border rounded" style="cursor:pointer">
+                        <option value="0">All Unit</option>
+                    </select>
+                    <input id="SearchText" type="text" class="form-control" placeholder="Search..." aria-label="Search">
+                    <button id="Search" class="btn border" type="button">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-4 mt-2">
+            <div class="float-end">
+                <button id="download-pdf" style="border: 1px solid #00000047;" class="rounded py-1"><i class="bi bi-cloud-arrow-down me-1"></i>Download PDF</button>
+            </div>
+        </div>
+    </div>
+  
+    <div id="mailAddress-table"></div>
+</div>
+
+
+
+
+@section Scripts {
+    @* ========pdf export cdn============ *@
+    <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.20/jspdf.plugin.autotable.min.js"></script>
+    <script type="text/javascript">
+        var table;
+         $(document).ready(function () {
+
+             //first load data=======================================
+             $.ajax({
+                url: '/Admin/MailAddress/GetAllMailAddress',
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if(response.unit){
+                        $.each(response.unit, function (i, unit) {
+                            $('#unit').append($('<option>', {
+                                value: unit.id,
+                                text: unit.name
+                            }));
+                        });
+                    };
+                    if (response.data) {
+                            console.log("response",response.data);
+                            table = new Tabulator("#mailAddress-table", {
+                            height: "800px",
+                            data: response.data,
+                            layout: "fitColumns",
+                            placeholder: "No Data Set",
+                            pagination: "local",
+                            paginationSize: 20,
+                            paginationSizeSelector: [5, 10, 15, 20,25,30],
+                            movableColumns: true,
+                            paginationCounter: "rows",
+                            columns: [
+                                { title: "SL", field: "department.name", sorter: "string", width: 100 },
+                                { title: "Name", field: "name", sorter: "string"},
+                                { title: "Designation", field: "designation.name", sorter: "string"},
+                                { title: "Department", field: "department.name", sorter: "string"},
+                                { title: "Mail Address", field: "email", sorter: "string"},
+                                { title: "Unit", field: "unit.name", sorter: "string"},
+                                {
+                                    title: "Actions", field: "", sorter: "string", formatter: function (cell, formatterParams, onRendered) {
+                                        var id = cell.getRow().getData().id;
+                                        return `<a href='/Admin/MailAddress/Upsert/${id}' class='btn btn-sm btn-success'><i class="bi bi-pen-fill"></i></a> <a class='btn btn-sm btn-danger delete-button' data-id='${id}'><i class="bi bi-trash-fill"></i></a>
+
+                                        `;
+                                    }
+                                }
+                            ],
+                        });
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        //search===================================================
+        $("#Search").on("click", function () {
+            var value = $("#SearchText").val();
+            var Dept = $("#dept").val();
+            var Unit = $("#unit option:selected").val();
+            // console.log("Unit",Unit);
+            //console.log(value);
+
+            $.ajax({
+                url: '/Admin/MailAddress/GetAllSearch?value='+value+'&Dept='+Dept+'&Unit='+Unit,
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    //console.log("responsedata", response);
+                    if (response.data) {
+                        // console.log(response.data);
+                        //Build Tabulator
+                            table = new Tabulator("#mailAddress-table", {
+                            height: "800px",
+                            data: response.data,
+                            layout: "fitColumns",
+                            placeholder: "No Data Set",
+                            pagination: "local",
+                            paginationSize: 20,
+                            paginationSizeSelector: [5, 10, 15, 20,25,30],
+                            movableColumns: true,
+                            paginationCounter: "rows",
+                            columns: [
+                                { title: "SL", field: "department.name", sorter: "string", width: 100 },
+                                { title: "Name", field: "name", sorter: "string"},
+                                { title: "Designation", field: "designation.name", sorter: "string"},
+                                { title: "Department", field: "department.name", sorter: "string"},
+                                { title: "Mail Address", field: "email", sorter: "string"},
+                                { title: "Unit", field: "unit.name", sorter: "string"},
+                                {
+                                    title: "Actions", field: "", sorter: "string", formatter: function (cell, formatterParams, onRendered) {
+                                        var id = cell.getRow().getData().id;
+                                        return `<a href='/Admin/MailAddress/Upsert/${id}' class='btn btn-sm btn-success'><i class="bi bi-pen-fill"></i></a> <a class='btn btn-sm btn-danger delete-button' data-id='${id}'><i class="bi bi-trash-fill"></i></a>
+
+                                        `;
+                                    }
+                                }
+                            ],
+                        });
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        });
+
+
+
+
+
+
+
+
+            var input = document.getElementById("SearchText");
+            input.addEventListener("keypress", function(event) {
+              if (event.key === "Enter") {
+             //alert("asasa"); 
+             var value = $("#SearchText").val();
+            var Dept = $("#dept").val();
+            var Unit = $("#unit option:selected").val();
+            // console.log("Unit",Unit);
+            //console.log(value);
+
+            $.ajax({
+                url: '/Admin/MailAddress/GetAllSearch?value='+value+'&Dept='+Dept+'&Unit='+Unit,
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    //console.log("responsedata", response);
+                    if (response.data) {
+                        //console.log(response.data);
+                        //Build Tabulator
+                            table = new Tabulator("#mailAddress-table", {
+                            height: "800px",
+                            data: response.data,
+                            layout: "fitColumns",
+                            placeholder: "No Data Set",
+                            pagination: "local",
+                            paginationSize: 20,
+                            paginationSizeSelector: [5, 10, 15, 20,25,30],
+                            movableColumns: true,
+                            paginationCounter: "rows",
+                            columns: [
+                                { title: "SL", field: "department.name", sorter: "string", width: 100 },
+                                { title: "Name", field: "name", sorter: "string"},
+                                { title: "Designation", field: "designation.name", sorter: "string"},
+                                { title: "Department", field: "department.name", sorter: "string"},
+                                { title: "Mail Address", field: "email", sorter: "string"},
+                                { title: "Unit", field: "unit.name", sorter: "string"},
+                                {
+                                    title: "Actions", field: "", sorter: "string", formatter: function (cell, formatterParams, onRendered) {
+                                        var id = cell.getRow().getData().id;
+                                        return `<a href='/Admin/MailAddress/Upsert/${id}' class='btn btn-sm btn-success'><i class="bi bi-pen-fill"></i></a> <a class='btn btn-sm btn-danger delete-button' data-id='${id}'><i class="bi bi-trash-fill"></i></a>
+
+                                        `;
+                                    }
+                                }
+                            ],
+                        });
+                    }
+                    else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+                event.preventDefault();
+              }
+            });
+
+
+
+
+
+
+            //delete functionalities==================================
+            $(document).on('click', '.delete-button', function (e) {
+                e.preventDefault();
+
+                 var id = $(this).data('id');
+
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/Admin/MailAddress/Delete/' + id,
+                            type: 'POST',
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire(
+                                        'Deleted!',
+                                        response.message,
+                                        'success'
+                                    ).then(() => {
+                                        location.reload();
+                                    });
+                                }
+                                else {
+                                    Swal.fire(
+                                        'Failed!',
+                                        response.message || 'Something went wrong.',
+                                        'error'
+                                    );
+                                }
+                            },
+                            error: function () {
+                                Swal.fire(
+                                    'Error!',
+                                    'An error occurred while deleting.',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+        // export toolbar pdf starts==========================
+                document.getElementById("download-pdf").addEventListener("click", function(){
+            table.download("pdf", "IP Phone Index.pdf", {
+                orientation:"portrait", //set page orientation to portrait
+                title:"IP Phone Index", //add title to report
+            });
+        });
+        // export toolbar pdf ends============================
+    </script>
+}

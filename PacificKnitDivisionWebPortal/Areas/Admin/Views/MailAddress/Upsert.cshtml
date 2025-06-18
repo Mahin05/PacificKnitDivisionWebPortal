@@ -1,0 +1,160 @@
+﻿@model PacificKnitDivisionWebPortal.Models.MailAddress
+
+@{
+    ViewData["Title"] = "Create";
+}
+<style>
+
+    .readonly-select {
+        pointer-events: none;
+        background-color: #f2f2f2;
+    }
+</style>
+<div class="main-div">
+    <h4 class="text-center">Create</h4>
+    <hr />
+    <div class="row d-flex justify-content-center align-content-center">
+        <div class="col-md-4">
+            <form asp-action="Upsert">
+                <input asp-for="Id" hidden />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group fw-bold mb-2">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group fw-bold mb-2">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                @if (Model.Id != 0)
+                {
+                    <div class="form-group fw-bold mb-2">
+                        <label asp-for="UnitId" class="control-label"></label><br />
+                        <select asp-for="UnitId" asp-items="ViewBag.UnitList" id="Unit" class="form-control readonly-select">
+                            <option selected disabled>--Select Unit--</option>
+                        </select>
+                        <span asp-validation-for="UnitId" class="text-danger"></span>
+                        <input class="d-none" asp-for="UnitId" name="dropdown">
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group fw-bold mb-2">
+                        <label asp-for="UnitId" class="control-label"></label><br />
+                        <select asp-for="UnitId" asp-items="ViewBag.UnitList" id="Unit" class="form-control">
+                            <option selected disabled>--Select Unit--</option>
+                        </select>
+                        <span asp-validation-for="UnitId" class="text-danger"></span>
+                    </div>
+                }
+
+                @if (Model.Id != 0)
+                {
+                    <div class="form-group fw-bold mb-2">
+                        <label asp-for="DeptId" class="control-label"></label>
+                        <select asp-for="DeptId" class="form-control readonly-select" asp-items="ViewBag.DeptList" id="Dept">
+                            <option disabled selected>--Select Category--</option>
+                        </select>
+                        <input class="d-none" asp-for="DeptId" name="dropdown">
+                        <span asp-validation-for="DeptId" class="text-danger"></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group fw-bold mb-2">
+                        <label asp-for="DeptId" class="control-label"></label>
+                        <select asp-for="DeptId" class="form-control" asp-items="ViewBag.DeptList" id="Dept">
+                        <option disabled selected>--Select Category--</option>
+                        </select>
+                        <span asp-validation-for="DeptId" class="text-danger"></span>
+                    </div>
+                }
+
+                @if (Model.Id != 0)
+                {
+                    <div class="form-group fw-bold mb-2">
+                        <label asp-for="DesigId" class="control-label"></label>
+                        <select asp-for="DesigId" class="form-control readonly-select" asp-items="ViewBag.DesigList" id="Desig">
+                            <option disabled selected>--Select Category--</option>
+                        </select>
+                        <input class="d-none" asp-for="DesigId" name="dropdown">
+                        <span asp-validation-for="DesigId" class="text-danger"></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group fw-bold mb-2">
+                        <label asp-for="DesigId" class="control-label"></label>
+                        <select asp-for="DesigId" class="form-control" asp-items="ViewBag.DesigList" id="Desig">
+                            <option disabled selected>--Select Category--</option>
+                        </select>
+                        <span asp-validation-for="DesigId" class="text-danger"></span>
+                    </div>
+                }
+
+                <div class="form-group fw-bold mb-2">
+                    @if (Model.Id != 0)
+                    {
+                        <button type="submit" value="Create" class="btn btn-success">Update</button>
+                    }
+                    else
+                    {
+
+                        <button type="submit" value="Create" class="btn btn-primary">Create</button>
+                    }
+                </div>
+            </form>
+
+            <div>
+                <a asp-action="Index">Back to List</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+        $("#Unit").on("change", function () {
+            var value = $(this).val();
+
+            $.ajax({
+                url: '/Admin/MailAddress/GetDepartmentByUnit',
+                method: 'GET',
+                dataType: 'json',
+                data: { UnitId: value },
+                success: function (response) {
+                    console.log("response", response);
+
+                    var $dept = $('#Dept');
+                    $dept.empty();
+                    $dept.append($('<option>', {
+                        value: '',
+                        text: '-- Select Department --'
+                    }));
+
+                    if (response.data && response.data.length > 0) {
+                        $.each(response.data, function (i, dept) {
+                            $dept.append($('<option>', {
+                                value: dept.id,
+                                text: dept.name
+                            }));
+                        });
+                    } else {
+                        console.log("No data found.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        });
+
+    </script>
+}
