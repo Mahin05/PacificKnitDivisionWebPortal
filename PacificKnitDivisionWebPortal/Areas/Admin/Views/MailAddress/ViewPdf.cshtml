@@ -84,7 +84,7 @@
     <div class="company-section pdf-section">
         <table style="width:65%;margin-left:auto;margin-right:auto;">
             <tr class="text-center">
-                <th style="background-color: #061640; color: white; font-size: 15px;" id="pkd">Pacific Knit Division IP phone Index</th>
+                <th style="background-color: #061640; color: white; font-size: 15px;" id="pkd">Pacific Knit Division Mail Address Index</th>
             </tr>
         </table>
         <table style="width:65%;margin-left:auto;margin-right:auto;">
@@ -95,24 +95,14 @@
         <table style="width:65%;margin-left:auto;margin-right:auto" class="font-size" id="PKL-TABLE">
             <thead>
                 <tr class="text-center">
-                    <th style="width:100px;background-color:#ffb938">Department</th>
-                    <th style="width:90px;background-color:#ffb938">IP No.</th>
-                    <th style="width:250px;background-color:#ffb938">Display Name</th>
-                    <th style="background-color:#ffb938;width:100px;">Unit</th>
+                    <th style="width:100px;background-color:#ffb938">SL#</th>
+                    <th style="width:90px;background-color:#ffb938">Name</th>
+                    <th style="width:250px;background-color:#ffb938">Designation</th>
+                    <th style="background-color:#ffb938;width:100px;">Department</th>
+                    <th style="background-color:#ffb938;width:100px;">Email Address</th>
                 </tr>
             </thead>
         </table>
-
-
-       @*  <table style="width:65%;margin-left:auto;margin-right:auto" class="font-size" id="PKL-DATA">
-            <tr class="text-center">
-                <th style="width:100px;background-color:#ffb938">Department</th>
-                <th style="width:90px;background-color:#ffb938">IP No.</th>
-                <th style="width:250px;background-color:#ffb938">Display Name</th>
-                <th style="background-color:#ffb938;width:100px;">Unit</th>
-            </tr>
-            <tbody id="PKL-DATA"></tbody>
-        </table> *@
     </div>
 
     <!-- Pacific Casuals Ltd. (Unit-1) -->
@@ -126,10 +116,11 @@
         <table style="width:65%;margin-left:auto;margin-right:auto" class="font-size" id="PCL1-TABLE">
             <thead>
                 <tr class="text-center">
-                    <th style="width:100px;background-color:#ffb938">Department</th>
-                    <th style="width:90px;background-color:#ffb938">IP No.</th>
-                    <th style="width:250px;background-color:#ffb938">Display Name</th>
-                    <th style="background-color:#ffb938;width:100px;">Unit</th>
+                    <th style="width:100px;background-color:#ffb938">SL#</th>
+                    <th style="width:90px;background-color:#ffb938">Name</th>
+                    <th style="width:250px;background-color:#ffb938">Designation</th>
+                    <th style="background-color:#ffb938;width:100px;">Department</th>
+                    <th style="background-color:#ffb938;width:100px;">Email Address</th>
                 </tr>
             </thead>
         </table>
@@ -146,10 +137,11 @@
         <table style="width:65%;margin-left:auto;margin-right:auto" class="font-size" id="PCL2-TABLE">
             <thead>
                 <tr class="text-center">
-                    <th style="width:100px;background-color:#ffb938">Department</th>
-                    <th style="width:90px;background-color:#ffb938">IP No.</th>
-                    <th style="width:250px;background-color:#ffb938">Display Name</th>
-                    <th style="background-color:#ffb938;width:100px;">Unit</th>
+                    <th style="width:100px;background-color:#ffb938">SL#</th>
+                    <th style="width:90px;background-color:#ffb938">Name</th>
+                    <th style="width:250px;background-color:#ffb938">Designation</th>
+                    <th style="background-color:#ffb938;width:100px;">Department</th>
+                    <th style="background-color:#ffb938;width:100px;">Email Address</th>
                 </tr>
             </thead>
         </table>
@@ -169,7 +161,7 @@
              //=======================PKD load data STARTS=======================================
              function LoadPKDData(){
              $.ajax({
-                url: '/Admin/IPPhoneDetails/GetIPPhoneOfPKD',
+                url: '/Admin/MailAddress/GetMailAddressPKD',
                 method: 'GET',
                 dataType: 'json',
                 success: function (response) {
@@ -186,8 +178,7 @@
                             });
 
                                     let table = document.getElementById("PKL-TABLE");
-
-        for (let name in groupedDataPKL) {
+                                    for (let name in groupedDataPKL) {
             let group = groupedDataPKL[name];
 
             let tbody = document.createElement('tbody');
@@ -227,17 +218,16 @@
 
                              //========================== pcl1 part starts================================
                              var dataArrayPCL1 = response.table2;
-                        let groupedDatapcl1 = {}; // Group by name (e.g., HR, ICT)
-                            dataArrayPCL1.forEach(item => {
+                             let groupedDatapcl1 = {}; // 
+                             dataArrayPCL1.forEach(item => {
                                 if (!groupedDatapcl1[item.name]) {
                                     groupedDatapcl1[item.name] = [];
                                 }
                                 groupedDatapcl1[item.name].push(item);
                             });
 
-                                    let table2 = document.getElementById("PCL1-TABLE");
-
-        for (let name in groupedDatapcl1) {
+                            let table2 = document.getElementById("PCL1-TABLE");
+                            for (let name in groupedDatapcl1) {
             let group = groupedDatapcl1[name];
 
             let tbody = document.createElement('tbody');
@@ -280,8 +270,8 @@
 
                              //========================== pcl2 part starts================================
                              var dataArraypcl2 = response.table3;
-                        let groupedDatapcl2 = {}; // Group by name (e.g., HR, ICT)
-                            dataArraypcl2.forEach(item => {
+                             let groupedDatapcl2 = {};
+                             dataArraypcl2.forEach(item => {
                                 if (!groupedDatapcl2[item.name]) {
                                     groupedDatapcl2[item.name] = [];
                                 }
@@ -289,8 +279,7 @@
                             });
 
                             let table3 = document.getElementById("PCL2-TABLE");
-
-        for (let name in groupedDatapcl2) {
+                            for (let name in groupedDatapcl2) {
             let group = groupedDatapcl2[name];
 
             let tbody = document.createElement('tbody');

@@ -265,13 +265,13 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetIPPhoneOfPKD()
+        public async Task<IActionResult> GetMailAddressPKD()
         {
             using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
             {
                 await connection.OpenAsync();
 
-                using (var multi = await connection.QueryMultipleAsync("GetIPPhoneListPKD", commandType: CommandType.StoredProcedure))
+                using (var multi = await connection.QueryMultipleAsync("GetMailAddressPKD", commandType: CommandType.StoredProcedure))
                 {
                     var table1 = (await multi.ReadAsync<IPPhoneViewModel>()).ToList();
                     var table2 = (await multi.ReadAsync<IPPhoneViewModel>()).ToList();
