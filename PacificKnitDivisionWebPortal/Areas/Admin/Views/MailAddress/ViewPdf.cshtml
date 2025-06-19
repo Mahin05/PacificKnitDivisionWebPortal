@@ -80,13 +80,27 @@
 <button id="download-pdf">Download PDF</button> *@
 
 <div class="main-div  pdf-section" style="font-size:10px">
-    <!-- Pacific Knitex Ltd. -->
+    <!-- bod -->
     <div class="company-section pdf-section">
         <table style="width:65%;margin-left:auto;margin-right:auto;">
             <tr class="text-center">
                 <th style="background-color: #061640; color: white; font-size: 15px;" id="pkd">Pacific Knit Division Mail Address Index</th>
             </tr>
         </table>
+        <table style="width:65%;margin-left:auto;margin-right:auto" class="font-size" id="BOD-TABLE">
+            <thead>
+                <tr class="text-center">
+                    <th style="background-color:#ffb938;width: 0px;">SL#</th>
+                    <th style="background-color:#ffb938;width: 230px;">Name</th>
+                    <th style="background-color:#ffb938;width: 120px;">Designation</th>
+                    <th style="background-color:#ffb938;width: 150px;">Department</th>
+                    <th style="background-color:#ffb938;width: 250px;">Email Address</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <!-- Pacific Knitex Ltd. -->
+    <div class="company-section pdf-section">
         <table style="width:65%;margin-left:auto;margin-right:auto;">
             <tr class="text-center">
                 <th style="background-color: #009ad9bd; color: white; font-size: 13px;">Pacific Knitex Ltd.</th>
@@ -95,11 +109,11 @@
         <table style="width:65%;margin-left:auto;margin-right:auto" class="font-size" id="PKL-TABLE">
             <thead>
                 <tr class="text-center">
-                    <th style="width:100px;background-color:#ffb938">SL#</th>
-                    <th style="width:90px;background-color:#ffb938">Name</th>
-                    <th style="width:250px;background-color:#ffb938">Designation</th>
-                    <th style="background-color:#ffb938;width:100px;">Department</th>
-                    <th style="background-color:#ffb938;width:100px;">Email Address</th>
+                    <th style="background-color:#ffb938;width: 0px;">SL#</th>
+                    <th style="background-color:#ffb938;width: 230px;">Name</th>
+                    <th style="background-color:#ffb938;width: 120px;">Designation</th>
+                    <th style="background-color:#ffb938;width: 150px;">Department</th>
+                    <th style="background-color:#ffb938;width: 250px;">Email Address</th>
                 </tr>
             </thead>
         </table>
@@ -116,11 +130,11 @@
         <table style="width:65%;margin-left:auto;margin-right:auto" class="font-size" id="PCL1-TABLE">
             <thead>
                 <tr class="text-center">
-                    <th style="width:100px;background-color:#ffb938">SL#</th>
-                    <th style="width:90px;background-color:#ffb938">Name</th>
-                    <th style="width:250px;background-color:#ffb938">Designation</th>
-                    <th style="background-color:#ffb938;width:100px;">Department</th>
-                    <th style="background-color:#ffb938;width:100px;">Email Address</th>
+                    <th style="background-color:#ffb938;width: 0px;">SL#</th>
+                    <th style="background-color:#ffb938;width: 230px;">Name</th>
+                    <th style="background-color:#ffb938;width: 120px;">Designation</th>
+                    <th style="background-color:#ffb938;width: 150px;">Department</th>
+                    <th style="background-color:#ffb938;width: 250px;">Email Address</th>
                 </tr>
             </thead>
         </table>
@@ -137,11 +151,11 @@
         <table style="width:65%;margin-left:auto;margin-right:auto" class="font-size" id="PCL2-TABLE">
             <thead>
                 <tr class="text-center">
-                    <th style="width:100px;background-color:#ffb938">SL#</th>
-                    <th style="width:90px;background-color:#ffb938">Name</th>
-                    <th style="width:250px;background-color:#ffb938">Designation</th>
-                    <th style="background-color:#ffb938;width:100px;">Department</th>
-                    <th style="background-color:#ffb938;width:100px;">Email Address</th>
+                    <th style="background-color:#ffb938;width: 0px;">SL#</th>
+                    <th style="background-color:#ffb938;width: 230px;">Name</th>
+                    <th style="background-color:#ffb938;width: 120px;">Designation</th>
+                    <th style="background-color:#ffb938;width: 150px;">Department</th>
+                    <th style="background-color:#ffb938;width: 250px;">Email Address</th>
                 </tr>
             </thead>
         </table>
@@ -166,9 +180,44 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response) {
-                      // console.log(response);
+                      console.log(response);
+                      //========================== bod part starts================================
+                            var dataArrayBOD = response.table1;
+                            let groupedDataBOD = {}; // Group by name (e.g., HR, ICT)
+                                dataArrayBOD.forEach(item => {
+                                    if (!groupedDataBOD[item.name]) {
+                                        groupedDataBOD[item.name] = [];
+                                    }
+                                    groupedDataBOD[item.name].push(item);
+                                });
+
+                                    let tablee = document.getElementById("BOD-TABLE");
+                                 for (let name in groupedDataBOD) {
+                                    let group = groupedDataBOD[name];
+
+                                    let tbody = document.createElement('tbody');
+                                    tbody.classList.add("no-break");
+
+                                    group.forEach((item, index) => {
+                                        let tr = document.createElement('tr');
+                                            tr.innerHTML = `
+                                                <td class="text-center fw-bold"></td>
+                                                <td class="text-start">${item.name}</td>
+                                                <td class="text-start">${item.designame}</td>
+                                                <td class="text-start"></td>
+                                                <td class="text-start">${item.email}</td>
+                                            `;
+
+                                        tbody.appendChild(tr);
+                                    });
+
+                                    tablee.appendChild(tbody); // Add group as a full <tbody>
+        }
+
+                             //========================== bod part ends================================
+
                       //========================== pkl part starts================================
-                      var dataArrayPKL = response.table1;
+                      var dataArrayPKL = response.table2;
                         let groupedDataPKL = {}; // Group by name (e.g., HR, ICT)
                             dataArrayPKL.forEach(item => {
                                 if (!groupedDataPKL[item.name]) {
@@ -186,22 +235,13 @@
 
             group.forEach((item, index) => {
                 let tr = document.createElement('tr');
-
-                if (index === 0) {
-                    let tdName = `<td rowspan="${group.length}" class="text-center fw-bold">${item.name}</td>`;
                     tr.innerHTML = `
-                        ${tdName}
-                        <td class="text-center fw-bold">${item.ipNo}</td>
-                        <td class="ps-2">${item.displayName}</td>
-                        <td class="text-center">${item.unit}</td>
+                        <td class="text-center fw-bold">${item.slno}</td>
+                        <td class="text-start">${item.name}</td>
+                        <td class="text-start">${item.designame}</td>
+                        <td class="text-start">${item.deptname}</td>
+                        <td class="text-start">${item.email}</td>
                     `;
-                } else {
-                    tr.innerHTML = `
-                        <td class="text-center fw-bold">${item.ipNo}</td>
-                        <td class="ps-2">${item.displayName}</td>
-                        <td class="text-center">${item.unit}</td>
-                    `;
-                }
 
                 tbody.appendChild(tr);
             });
@@ -217,7 +257,7 @@
 
 
                              //========================== pcl1 part starts================================
-                             var dataArrayPCL1 = response.table2;
+                             var dataArrayPCL1 = response.table3;
                              let groupedDatapcl1 = {}; // 
                              dataArrayPCL1.forEach(item => {
                                 if (!groupedDatapcl1[item.name]) {
@@ -227,36 +267,27 @@
                             });
 
                             let table2 = document.getElementById("PCL1-TABLE");
-                            for (let name in groupedDatapcl1) {
-            let group = groupedDatapcl1[name];
+                              for (let name in groupedDatapcl1) {
+                                let group = groupedDatapcl1[name];
 
-            let tbody = document.createElement('tbody');
-            tbody.classList.add("no-break");
+                                let tbody = document.createElement('tbody');
+                                tbody.classList.add("no-break");
 
-            group.forEach((item, index) => {
-                let tr = document.createElement('tr');
+                                group.forEach((item, index) => {
+                                    let tr = document.createElement('tr');
+                                        tr.innerHTML = `
+                                            <td class="text-center fw-bold">${item.slno}</td>
+                                            <td class="text-start">${item.name}</td>
+                                            <td class="text-start">${item.designame}</td>
+                                            <td class="text-start">${item.deptname}</td>
+                                            <td class="text-start">${item.email}</td>
+                                        `;
 
-                if (index === 0) {
-                    let tdName = `<td rowspan="${group.length}" class="text-center fw-bold">${item.name}</td>`;
-                    tr.innerHTML = `
-                        ${tdName}
-                        <td class="text-center fw-bold">${item.ipNo}</td>
-                        <td class="ps-2">${item.displayName}</td>
-                        <td class="text-center">${item.unit}</td>
-                    `;
-                } else {
-                    tr.innerHTML = `
-                        <td class="text-center fw-bold">${item.ipNo}</td>
-                        <td class="ps-2">${item.displayName}</td>
-                        <td class="text-center">${item.unit}</td>
-                    `;
-                }
+                                    tbody.appendChild(tr);
+                                });
 
-                tbody.appendChild(tr);
-            });
-
-            table2.appendChild(tbody); // Add group as a full <tbody>
-        }
+                                table2.appendChild(tbody); // Add group as a full <tbody>
+                            }
 
 
                              //========================== pcl1 part ends================================
@@ -269,7 +300,7 @@
 
 
                              //========================== pcl2 part starts================================
-                             var dataArraypcl2 = response.table3;
+                             var dataArraypcl2 = response.table4;
                              let groupedDatapcl2 = {};
                              dataArraypcl2.forEach(item => {
                                 if (!groupedDatapcl2[item.name]) {
@@ -278,37 +309,28 @@
                                 groupedDatapcl2[item.name].push(item);
                             });
 
-                            let table3 = document.getElementById("PCL2-TABLE");
-                            for (let name in groupedDatapcl2) {
-            let group = groupedDatapcl2[name];
+                                let table3 = document.getElementById("PCL2-TABLE");
+                                for (let name in groupedDatapcl2) {
+                                let group = groupedDatapcl2[name];
 
-            let tbody = document.createElement('tbody');
-            tbody.classList.add("no-break");
+                                        let tbody = document.createElement('tbody');
+                                        tbody.classList.add("no-break");
 
-            group.forEach((item, index) => {
-                let tr = document.createElement('tr');
+                                        group.forEach((item, index) => {
+                                            let tr = document.createElement('tr');;
+                                                tr.innerHTML = `
+                                                    <td class="text-center fw-bold">${item.slno}</td>
+                                                    <td class="text-start">${item.name}</td>
+                                                    <td class="text-start">${item.designame}</td>
+                                                    <td class="text-start">${item.deptname}</td>
+                                                    <td class="text-start">${item.email}</td>
+                                                `;
 
-                if (index === 0) {
-                    let tdName = `<td rowspan="${group.length}" class="text-center fw-bold">${item.name}</td>`;
-                    tr.innerHTML = `
-                        ${tdName}
-                        <td class="text-center fw-bold">${item.ipNo}</td>
-                        <td class="ps-2">${item.displayName}</td>
-                        <td class="text-center">${item.unit}</td>
-                    `;
-                } else {
-                    tr.innerHTML = `
-                        <td class="text-center fw-bold">${item.ipNo}</td>
-                        <td class="ps-2">${item.displayName}</td>
-                        <td class="text-center">${item.unit}</td>
-                    `;
-                }
+                                            tbody.appendChild(tr);
+                                        });
 
-                tbody.appendChild(tr);
-            });
-
-            table3.appendChild(tbody); // Add group as a full <tbody>
-        }
+                                        table3.appendChild(tbody); // Add group as a full <tbody>
+                                    }
 
 
                              //========================== pcl2 part ends================================

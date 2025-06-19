@@ -273,11 +273,12 @@ namespace PacificKnitDivisionWebPortal.Areas.Admin.Controllers
 
                 using (var multi = await connection.QueryMultipleAsync("GetMailAddressPKD", commandType: CommandType.StoredProcedure))
                 {
-                    var table1 = (await multi.ReadAsync<IPPhoneViewModel>()).ToList();
-                    var table2 = (await multi.ReadAsync<IPPhoneViewModel>()).ToList();
-                    var table3 = (await multi.ReadAsync<IPPhoneViewModel>()).ToList();
-
-                    return Json(new {Table1 = table1,Table2 = table2,Table3 = table3});
+                    var table1 = (await multi.ReadAsync<MailAddressVM>()).ToList();
+                    var table2 = (await multi.ReadAsync<MailAddressVM>()).ToList();
+                    var table3 = (await multi.ReadAsync<MailAddressVM>()).ToList();
+                    var table4 = (await multi.ReadAsync<MailAddressVM>()).ToList();
+                    
+                    return Json(new {Table1 = table1,Table2 = table2,Table3 = table3, Table4 = table4 });
                 }
             }
         }
