@@ -2,16 +2,16 @@
     ViewBag.HideLayoutParts = true;
 }
 <style>
-	table, th, td {
-		border: 1px solid black;
-	}
-/* 
-    tr, td, th {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
+    table, th, td {
+        border: 1px solid black;
     }
+    /*
+        tr, td, th {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
 
-    /* Add a forced page break before each new unit (e.g., Casuals Unit-1/2) */
+        /* Add a forced page break before each new unit (e.g., Casuals Unit-1/2) */
     .pdf-page-break {
         page-break-before: always !important;
         break-before: page !important;
@@ -22,58 +22,58 @@
         page-break-inside: avoid;
         break-inside: avoid;
     }
-    .font-size{
-        font-size:11px;
-    }
-    @@media print {
-        body
 
-    {
-        margin: 0;
-        padding: 0;
-        font-size: 10px;
+    .font-size {
+        font-size: 11px;
     }
+
+    @@media print {
+        body {
+            margin: 0;
+            padding: 0;
+            font-size: 10px;
+        }
 
         th, td, #pkd {
             -webkit-print-color-adjust: exact; /* For Safari, Chrome */
             print-color-adjust: exact; /* For Firefox, Edge */
         }
-    table {
-        width: 100% !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        border-collapse: collapse;
-    }
 
-    th, td {
-        border: 1px solid #000;
-        padding: 4px;
-        text-align: center;
-    }
+        table {
+            width: 100% !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            border-collapse: collapse;
+        }
 
-    .pdf-page-break {
-        page-break-before: always !important;
-        break-before: page !important;
-    }
+        th, td {
+            border: 1px solid #000;
+            padding: 4px;
+            text-align: center;
+        }
 
-    .pdf-section {
-        page-break-inside: avoid ;
-        break-inside: avoid !important;
-    }
+        .pdf-page-break {
+            page-break-before: always !important;
+            break-before: page !important;
+        }
 
-    .text-center {
-        text-align: center;
-    }
+        .pdf-section {
+            page-break-inside: avoid;
+            break-inside: avoid !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
 
         tbody.no-break {
             page-break-inside: avoid !important;
             break-inside: avoid !important;
         }
-    /* Hide buttons or UI elements in print */
-    #download-pdf, .no-print {
-        display: none !important;
-    }
-
+        /* Hide buttons or UI elements in print */
+        #download-pdf, .no-print {
+            display: none !important;
+        }
     }
 </style>
 @* <a class="btn btn-link text-info" asp-area="admin" asp-action="Index">Go Back</a>
@@ -196,12 +196,12 @@
              //=======================PKD load data STARTS=======================================
              function LoadPKDData(){
              $.ajax({
-                url: '/Admin/MailAddress/GetMailAddressPKD',
+                url: '/User/MailAddress/GetMailAddressPKD',
                 method: 'GET',
                 dataType: 'json',
                 success: function (response) {
                     if (response) {
-                      console.log(response);
+                      //console.log(response);
                       //========================== bod part starts================================
                             var dataArrayBOD = response.table1;
                             let groupedDataBOD = {}; // Group by name (e.g., HR, ICT)
@@ -279,7 +279,7 @@
 
                              //========================== pcl1 part starts================================
                              var dataArrayPCL1 = response.table3;
-                             let groupedDatapcl1 = {}; // 
+                             let groupedDatapcl1 = {}; //
                              dataArrayPCL1.forEach(item => {
                                 if (!groupedDatapcl1[item.name]) {
                                     groupedDatapcl1[item.name] = [];

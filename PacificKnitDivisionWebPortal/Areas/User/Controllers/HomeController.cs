@@ -60,6 +60,17 @@ public class HomeController : Controller
     {
         return View();
     }
+
+    public IActionResult Mail()
+    {
+        return View();
+    }
+
+    public async Task<IActionResult> MailAddress()
+    {
+        var list = unitOfWork.mailAddress.GetAll().Include(i => i.Designation).OrderBy(x => x.Designation.DisplayNo);
+        return View(await list.ToListAsync());
+    }
     #region API
 
     [HttpGet]
@@ -144,5 +155,109 @@ public class HomeController : Controller
         }
 
     }
+
+
+
+
+
+    [HttpGet]
+    public async Task<IActionResult> GetMailAddressPKD()
+    {
+        using (var connection = new SqlConnection(_context.Database.GetConnectionString()))
+        {
+            await connection.OpenAsync();
+
+            using (var multi = await connection.QueryMultipleAsync("GetMailAddressPKD", commandType: CommandType.StoredProcedure))
+            {
+                var table1 = (await multi.ReadAsync<MailAddressVM>()).ToList();
+                var table2 = (await multi.ReadAsync<MailAddressVM>()).ToList();
+                var table3 = (await multi.ReadAsync<MailAddressVM>()).ToList();
+                var table4 = (await multi.ReadAsync<MailAddressVM>()).ToList();
+                var table5 = (await multi.ReadAsync<MailAddressVM>()).ToList();
+
+                return Json(new { Table1 = table1, Table2 = table2, Table3 = table3, Table4 = table4, Table5 = table5 });
+            }
+        }
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllMailAddress()
+    {
+        var mailAddress = unitOfWork.mailAddress.GetAll().Include(x => x.Designation).Include(x => x.Department);
+        var department = unitOfWork.department.GetAll();
+        var unitList = await unitOfWork.unit.GetAll().ToListAsync();
+        return Json(new { data = mailAddress, dept = department, unit = unitList });
+    }
+
+
+
+    [HttpGet]
+    public IActionResult GetAllMailBySearch(string value, int Dept, int Unit)
+    {
+        if (value == null && Dept == 0 && Unit == 0)
+        {
+            var mailAddress = unitOfWork.mailAddress.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Include(x => x.Designation);
+            return Json(new { data = mailAddress });
+        }
+        if (value == null && Dept != 0 && Unit != 0)
+        {
+            var mailAddress = unitOfWork.mailAddress.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Include(x => x.Designation).Where(x => x.DeptId == Dept && x.UnitId == Unit);
+            return Json(new { data = mailAddress });
+        }
+        if (value == null && Dept != 0 && Unit == 0)
+        {
+            var mailAddress = unitOfWork.mailAddress.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Include(x => x.Designation).Where(x => x.DeptId == Dept);
+            return Json(new { data = mailAddress });
+        }
+        if (value == null && Dept == 0 && Unit != 0)
+        {
+            var mailAddress = unitOfWork.mailAddress.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Include(x => x.Designation).Where(x => x.UnitId == Unit);
+            return Json(new { data = mailAddress });
+        }
+        if (value != null && Dept != 0 && Unit == 0)
+        {
+            var mailAddress = unitOfWork.mailAddress.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Include(x => x.Designation).Where(x => x.DeptId == Dept && (x.Name.Contains(value) ||
+                x.Email.Contains(value) ||
+                x.Department.Name.Contains(value) ||
+                x.Designation.Name.Contains(value)
+                ));
+            return Json(new { data = mailAddress });
+        }
+        if (value != null && Dept == 0 && Unit != 0)
+        {
+            var mailAddress = unitOfWork.mailAddress.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Include(x => x.Designation).Where(x => x.UnitId == Unit && (x.Email.Contains(value) ||
+                x.Name.Contains(value) ||
+                x.Department.Name.Contains(value) ||
+                x.Designation.Name.Contains(value)
+                ));
+            return Json(new { data = mailAddress });
+        }
+        if (value != null && Dept != 0 && Unit != 0)
+        {
+            var mailAddress = unitOfWork.mailAddress.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Include(x => x.Designation).Where(x => x.UnitId == Unit && x.DeptId == Dept && (x.Name.Contains(value) ||
+                x.Email.Contains(value) ||
+                x.Department.Name.Contains(value) ||
+                x.Designation.Name.Contains(value)
+                ));
+            return Json(new { data = mailAddress });
+        }
+        else
+        {
+            var mailAddress = unitOfWork.mailAddress.GetAll().Include(x => x.Department).ThenInclude(x => x.Unit).Include(x => x.Designation).Where(
+                x => x.Name.Contains(value) ||
+                x.Email.Contains(value) ||
+                x.Department.Name.Contains(value) ||
+                x.Designation.Name.Contains(value)
+                );
+            return Json(new { data = mailAddress });
+        }
+
+    }
+
+
+
+
+
     #endregion
 }
